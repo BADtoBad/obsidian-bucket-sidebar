@@ -117,7 +117,7 @@ function iconButton(
   label: string,
   onClick: (event: MouseEvent) => void
 ): HTMLButtonElement {
-  const button = document.createElement("button");
+  const button = createEl("button");
   button.type = "button";
   button.className = "bucket-icon-button clickable-icon";
   button.setAttribute("aria-label", label);
@@ -155,22 +155,22 @@ class TextInputModal extends Modal {
     this.titleEl.textContent = this.heading;
     this.contentEl.replaceChildren();
 
-    const form = document.createElement("form");
+    const form = createEl("form");
     form.className = "bucket-text-form";
-    const input = document.createElement("input");
+    const input = createEl("input");
     input.type = "text";
     input.value = this.initialValue;
     input.placeholder = this.placeholder;
     input.className = "bucket-text-input";
     input.setAttribute("aria-label", this.heading);
 
-    const actions = document.createElement("div");
+    const actions = createDiv();
     actions.className = "bucket-modal-actions";
-    const cancel = document.createElement("button");
+    const cancel = createEl("button");
     cancel.type = "button";
     cancel.textContent = localize("取消");
     cancel.addEventListener("click", () => this.close());
-    const submit = document.createElement("button");
+    const submit = createEl("button");
     submit.type = "submit";
     submit.className = "mod-cta";
     submit.textContent = this.submitLabel;
@@ -212,14 +212,14 @@ class SpaceIconPickerModal extends Modal {
     this.titleEl.textContent = localize("选择 Space 图标");
     this.contentEl.replaceChildren();
 
-    const grid = document.createElement("div");
+    const grid = createDiv();
     grid.className = "bucket-space-icon-grid";
     grid.setAttribute("role", "listbox");
     grid.setAttribute("aria-label", localize("Space 图标"));
 
     let selectedButton: HTMLButtonElement | null = null;
     for (const choice of SPACE_ICON_CHOICES) {
-      const button = document.createElement("button");
+      const button = createEl("button");
       button.type = "button";
       button.className = "bucket-space-icon-choice";
       button.setAttribute("role", "option");
@@ -228,11 +228,11 @@ class SpaceIconPickerModal extends Modal {
       button.setAttribute("aria-selected", String(selected));
       button.title = choice.label;
 
-      const icon = document.createElement("span");
+      const icon = createSpan();
       icon.className = "bucket-space-icon-choice-symbol";
       icon.setAttribute("aria-hidden", "true");
       setIcon(icon, choice.id);
-      const label = document.createElement("span");
+      const label = createSpan();
       label.className = "bucket-space-icon-choice-label";
       label.textContent = choice.label;
       button.append(icon, label);
@@ -506,21 +506,22 @@ export default class BucketSidebarPlugin extends Plugin {
     });
   }
 
-  onunload(): void {
-    this.app.workspace.detachLeavesOfType(VIEW_TYPE_BUCKET_SIDEBAR);
-  }
-
   async activateView(): Promise<void> {
-    let leaf: WorkspaceLeaf | null = this.app.workspace.getLeavesOfType(VIEW_TYPE_BUCKET_SIDEBAR)[0] || null;
-    if (!leaf) {
-      leaf = this.app.workspace.getLeftLeaf(false);
+    try {
+      let leaf: WorkspaceLeaf | null = this.app.workspace.getLeavesOfType(VIEW_TYPE_BUCKET_SIDEBAR)[0] || null;
       if (!leaf) {
-        new Notice(localize("无法创建左侧栏视图"));
-        return;
+        leaf = this.app.workspace.getLeftLeaf(false);
+        if (!leaf) {
+          new Notice(localize("无法创建左侧栏视图"));
+          return;
+        }
+        await leaf.setViewState({ type: VIEW_TYPE_BUCKET_SIDEBAR, active: true });
       }
-      await leaf.setViewState({ type: VIEW_TYPE_BUCKET_SIDEBAR, active: true });
+      await this.app.workspace.revealLeaf(leaf);
+    } catch (error) {
+      console.error("Bucket Sidebar: failed to open view", error);
+      new Notice(localize("无法创建左侧栏视图"));
     }
-    this.app.workspace.revealLeaf(leaf);
   }
 
   promptCreateBucket(): void {
@@ -740,7 +741,7 @@ export default class BucketSidebarPlugin extends Plugin {
           this.changeFolderSort(path, value as FolderSortOrder | "inherit");
           modal.close();
         }));
-    const description = document.createElement("p");
+    const description = createEl("p");
     description.textContent = localize`当前生效：${resolved === "created-desc" ? localize("创建时间，新到旧") : localize("名称，A 到 Z")}。可通过 Bucket 撤销命令恢复。`;
     modal.contentEl.appendChild(description);
     modal.open();
@@ -868,7 +869,7 @@ class BucketSidebarView extends ItemView {
   }
 
   async onOpen(): Promise<void> {
-    this.rootEl = document.createElement("div");
+    this.rootEl = createDiv();
     this.rootEl.className = "bucket-sidebar-root";
     this.contentEl.replaceChildren(this.rootEl);
     this.render();
@@ -888,10 +889,10 @@ class BucketSidebarView extends ItemView {
 
     const activeSpace = this.plugin.activeSpace;
 
-    const list = document.createElement("div");
+    const list = createDiv();
     list.className = "bucket-list";
     list.setAttribute("role", "tree");
-    const treeLabel = document.createElement("span");
+    const treeLabel = createSpan();
     treeLabel.className = "bucket-accessible-label";
     treeLabel.id = `bucket-tree-label-${++bucketViewLabelSequence}`;
     treeLabel.textContent = localize("虚拟 Bucket 列表");
@@ -917,13 +918,13 @@ class BucketSidebarView extends ItemView {
   }
 
   private renderSpaceSwitcher(): HTMLElement {
-    const wrapper = document.createElement("div");
+    const wrapper = createDiv();
     wrapper.className = "bucket-space-switcher-wrap";
 
-    const switcher = document.createElement("div");
+    const switcher = createDiv();
     switcher.className = "bucket-space-switcher";
 
-    const tabs = document.createElement("div");
+    const tabs = createDiv();
     tabs.className = "bucket-space-tabs";
     tabs.setAttribute("role", "radiogroup");
     tabs.setAttribute("aria-label", localize("Project / Area 切换器"));
@@ -933,7 +934,7 @@ class BucketSidebarView extends ItemView {
     for (let index = 0; index < spaces.length; index += 1) {
       const space = spaces[index];
       const active = space.id === activeSpaceId;
-      const button = document.createElement("button");
+      const button = createEl("button");
       button.type = "button";
       button.className = "bucket-space-tab";
       button.classList.toggle("is-active", active);
@@ -944,14 +945,14 @@ class BucketSidebarView extends ItemView {
       button.tabIndex = active ? 0 : -1;
       button.title = space.name;
 
-      const icon = document.createElement("span");
+      const icon = createSpan();
       icon.className = "bucket-space-tab-icon";
       icon.setAttribute("aria-hidden", "true");
       setIcon(icon, space.icon || DEFAULT_SPACE_ICON);
       button.appendChild(icon);
 
       if (this.plugin.data.settings.showSpaceNames) {
-        const label = document.createElement("span");
+        const label = createSpan();
         label.className = "bucket-space-tab-label";
         label.textContent = space.name;
         button.appendChild(label);
@@ -980,12 +981,12 @@ class BucketSidebarView extends ItemView {
       tabs.appendChild(button);
     }
 
-    const addButton = document.createElement("button");
+    const addButton = createEl("button");
     addButton.type = "button";
     addButton.className = "bucket-space-add";
     addButton.setAttribute("aria-label", localize("新建 Project / Area"));
     addButton.title = localize("新建 Project / Area");
-    const addIcon = document.createElement("span");
+    const addIcon = createSpan();
     addIcon.setAttribute("aria-hidden", "true");
     setIcon(addIcon, "plus");
     addButton.appendChild(addIcon);
@@ -1009,14 +1010,14 @@ class BucketSidebarView extends ItemView {
   }
 
   private renderPinnedSection(): HTMLElement {
-    const section = document.createElement("section");
+    const section = createEl("section");
     section.className = "bucket-pinned-section";
     section.setAttribute("role", "group");
     section.setAttribute("aria-label", localize("置顶"));
 
     section.appendChild(this.renderSectionHeading(localize("置顶")));
 
-    const entries = document.createElement("div");
+    const entries = createDiv();
     entries.className = "bucket-pinned-entries";
     entries.setAttribute("role", "group");
     for (const entry of this.plugin.activeSpace.pinnedEntries) {
@@ -1027,7 +1028,7 @@ class BucketSidebarView extends ItemView {
   }
 
   private renderSectionHeading(label: string): HTMLElement {
-    const heading = document.createElement("div");
+    const heading = createDiv();
     heading.className = "bucket-section-heading";
     heading.textContent = label;
     heading.setAttribute("role", "heading");
@@ -1036,7 +1037,7 @@ class BucketSidebarView extends ItemView {
   }
 
   private renderPinnedEntry(entry: BucketEntry): HTMLElement {
-    const wrapper = document.createElement("div");
+    const wrapper = createDiv();
     wrapper.className = "bucket-entry-wrapper bucket-pinned-entry";
     wrapper.dataset.entryId = entry.id;
     const target = this.app.vault.getAbstractFileByPath(entry.path);
@@ -1044,7 +1045,7 @@ class BucketSidebarView extends ItemView {
     const validFile = entry.type === "file" && isBucketFile(target) ? target : null;
     const missing = validFolder === null && validFile === null;
 
-    const row = document.createElement("div");
+    const row = createDiv();
     row.className = "bucket-entry-row";
     row.setAttribute("role", "treeitem");
     row.setAttribute("aria-level", "1");
@@ -1075,18 +1076,18 @@ class BucketSidebarView extends ItemView {
       disclosure.disabled = validFolder === null;
       disclosure.setAttribute("aria-expanded", String(entry.expanded === true));
     } else {
-      const spacer = document.createElement("span");
+      const spacer = createSpan();
       spacer.className = "bucket-disclosure-spacer";
       row.appendChild(spacer);
     }
 
-    const leading = document.createElement("span");
+    const leading = createSpan();
     leading.className = "bucket-entry-icon";
     leading.setAttribute("aria-hidden", "true");
     setIcon(leading, entry.type === "folder" ? "folder" : "file-text");
     row.appendChild(leading);
 
-    const label = document.createElement("button");
+    const label = createEl("button");
     label.type = "button";
     label.className = "bucket-entry-label";
     label.textContent = entry.label || displayName(entry.path);
@@ -1106,13 +1107,13 @@ class BucketSidebarView extends ItemView {
     row.appendChild(label);
 
     if (missing) {
-      const status = document.createElement("span");
+      const status = createSpan();
       status.className = "bucket-missing-label";
       status.textContent = localize("缺失");
       row.appendChild(status);
     }
 
-    const actions = document.createElement("div");
+    const actions = createDiv();
     actions.className = "bucket-row-actions";
     if (validFolder) this.addCreationAction(actions, validFolder.path);
     iconButton(actions, "more-horizontal", localize`${label.textContent || entry.path} 的更多操作`, (event) => {
@@ -1123,7 +1124,7 @@ class BucketSidebarView extends ItemView {
     wrapper.appendChild(row);
 
     if (validFolder && entry.expanded) {
-      const children = document.createElement("div");
+      const children = createDiv();
       children.className = "bucket-folder-children";
       children.setAttribute("role", "group");
       this.renderFolderChildren(children, entry, validFolder, 1, 1);
@@ -1143,15 +1144,15 @@ class BucketSidebarView extends ItemView {
   }
 
   private renderEmptyState(): HTMLElement {
-    const empty = document.createElement("div");
+    const empty = createDiv();
     empty.className = "bucket-empty-state";
-    const heading = document.createElement("div");
+    const heading = createDiv();
     heading.className = "bucket-empty-heading";
     heading.textContent = localize("还没有 Bucket");
-    const description = document.createElement("div");
+    const description = createDiv();
     description.className = "bucket-empty-description";
     description.textContent = localize("Bucket 只保存引用，不会移动或删除真实文件。");
-    const create = document.createElement("button");
+    const create = createEl("button");
     create.type = "button";
     create.className = "mod-cta";
     create.textContent = localize("新建 Bucket");
@@ -1161,13 +1162,13 @@ class BucketSidebarView extends ItemView {
   }
 
   private renderBucket(bucket: Bucket): HTMLElement {
-    const section = document.createElement("section");
+    const section = createEl("section");
     section.className = "bucket-section";
     section.dataset.bucketId = bucket.id;
     section.setAttribute("role", "treeitem");
     section.setAttribute("aria-expanded", String(!bucket.collapsed));
 
-    const header = document.createElement("div");
+    const header = createDiv();
     header.className = "bucket-header";
     const disclosure = iconButton(
       header,
@@ -1183,13 +1184,13 @@ class BucketSidebarView extends ItemView {
     disclosure.classList.add("bucket-disclosure");
     disclosure.setAttribute("aria-expanded", String(!bucket.collapsed));
 
-    const bucketIcon = document.createElement("span");
+    const bucketIcon = createSpan();
     bucketIcon.className = "bucket-leading-icon";
     bucketIcon.setAttribute("aria-hidden", "true");
     setIcon(bucketIcon, "layers");
     header.appendChild(bucketIcon);
 
-    const name = document.createElement("button");
+    const name = createEl("button");
     name.type = "button";
     name.className = "bucket-name";
     name.textContent = bucket.name;
@@ -1197,13 +1198,13 @@ class BucketSidebarView extends ItemView {
     name.addEventListener("click", () => disclosure.click());
     header.appendChild(name);
 
-    const count = document.createElement("span");
+    const count = createSpan();
     count.className = "bucket-count";
     count.textContent = String(bucket.entries.length);
     count.setAttribute("aria-label", localize`${bucket.entries.length} 个引用`);
     header.appendChild(count);
 
-    const actions = document.createElement("div");
+    const actions = createDiv();
     actions.className = "bucket-row-actions";
     iconButton(actions, "plus", localize`向 ${bucket.name} 添加内容`, (event) => {
       event.stopPropagation();
@@ -1222,7 +1223,7 @@ class BucketSidebarView extends ItemView {
     });
     section.appendChild(header);
 
-    const entries = document.createElement("div");
+    const entries = createDiv();
     entries.className = "bucket-entries";
     entries.setAttribute("role", "group");
     entries.hidden = bucket.collapsed === true;
@@ -1230,7 +1231,7 @@ class BucketSidebarView extends ItemView {
     entries.addEventListener("drop", (event) => this.handleDrop(event, bucket.id, bucket.entries.length));
 
     if (bucket.entries.length === 0) {
-      const empty = document.createElement("button");
+      const empty = createEl("button");
       empty.type = "button";
       empty.className = "bucket-entry-empty";
       empty.textContent = localize("添加笔记或文件夹…");
@@ -1253,7 +1254,7 @@ class BucketSidebarView extends ItemView {
   }
 
   private renderEntry(bucket: Bucket, entry: BucketEntry, index: number): HTMLElement {
-    const wrapper = document.createElement("div");
+    const wrapper = createDiv();
     wrapper.className = "bucket-entry-wrapper";
     wrapper.dataset.entryId = entry.id;
     const target = this.app.vault.getAbstractFileByPath(entry.path);
@@ -1261,7 +1262,7 @@ class BucketSidebarView extends ItemView {
     const validFile = entry.type === "file" && isBucketFile(target) ? target : null;
     const missing = validFolder === null && validFile === null;
 
-    const row = document.createElement("div");
+    const row = createDiv();
     row.className = "bucket-entry-row";
     row.setAttribute("role", "treeitem");
     row.setAttribute("aria-level", "2");
@@ -1308,18 +1309,18 @@ class BucketSidebarView extends ItemView {
       disclosure.disabled = validFolder === null;
       disclosure.setAttribute("aria-expanded", String(entry.expanded === true));
     } else {
-      const spacer = document.createElement("span");
+      const spacer = createSpan();
       spacer.className = "bucket-disclosure-spacer";
       row.appendChild(spacer);
     }
 
-    const leading = document.createElement("span");
+    const leading = createSpan();
     leading.className = "bucket-entry-icon";
     leading.setAttribute("aria-hidden", "true");
     setIcon(leading, entry.type === "folder" ? "folder" : "file-text");
     row.appendChild(leading);
 
-    const label = document.createElement("button");
+    const label = createEl("button");
     label.type = "button";
     label.className = "bucket-entry-label";
     label.textContent = entry.label || displayName(entry.path);
@@ -1339,13 +1340,13 @@ class BucketSidebarView extends ItemView {
     row.appendChild(label);
 
     if (missing) {
-      const status = document.createElement("span");
+      const status = createSpan();
       status.className = "bucket-missing-label";
       status.textContent = localize("缺失");
       row.appendChild(status);
     }
 
-    const actions = document.createElement("div");
+    const actions = createDiv();
     actions.className = "bucket-row-actions";
     if (validFolder) this.addCreationAction(actions, validFolder.path);
     iconButton(actions, "more-horizontal", localize`${label.textContent || entry.path} 的更多操作`, (event) => {
@@ -1356,7 +1357,7 @@ class BucketSidebarView extends ItemView {
     wrapper.appendChild(row);
 
     if (validFolder && entry.expanded) {
-      const children = document.createElement("div");
+      const children = createDiv();
       children.className = "bucket-folder-children";
       children.setAttribute("role", "group");
       this.renderFolderChildren(children, entry, validFolder, 1);
@@ -1379,7 +1380,7 @@ class BucketSidebarView extends ItemView {
         name: child.name, path: child.path, folder: child instanceof TFolder,
         ctime: child instanceof TFile ? child.stat?.ctime : undefined,
         created: order === "created-desc" && child instanceof TFile && child.extension.toLowerCase() === "md"
-          ? this.app.metadataCache.getFileCache(child)?.frontmatter?.created : undefined
+          ? this.app.metadataCache.getFileCache(child)?.frontmatter?.created as unknown : undefined
       }}))
       .sort((left, right) => compareFolderChildren(left.key, right.key, order))
       .map(item => item.child);
@@ -1387,7 +1388,7 @@ class BucketSidebarView extends ItemView {
     for (const child of children) {
       const target = targetFromFile(child);
       if (!target) continue;
-      const row = document.createElement("div");
+      const row = createDiv();
       row.className = "bucket-entry-row bucket-nested-row";
       // Stable identity for optional icon integrations; never match by label.
       row.dataset.bucketPath = child.path;
@@ -1415,20 +1416,20 @@ class BucketSidebarView extends ItemView {
         disclosure.classList.add("bucket-disclosure");
         disclosure.setAttribute("aria-expanded", String(expanded));
 
-        const icon = document.createElement("span");
+        const icon = createSpan();
         icon.className = "bucket-entry-icon";
         icon.setAttribute("aria-hidden", "true");
         setIcon(icon, "folder");
         row.appendChild(icon);
 
-        const label = document.createElement("button");
+        const label = createEl("button");
         label.type = "button";
         label.className = "bucket-entry-label";
         label.textContent = child.name;
         label.title = child.path;
         label.addEventListener("click", () => this.toggleNestedFolder(rootEntry, child.path));
         row.appendChild(label);
-        const actions = document.createElement("div");
+        const actions = createDiv();
         actions.className = "bucket-row-actions";
         this.addCreationAction(actions, child.path);
         iconButton(actions, "more-horizontal", localize`${child.name} 的更多操作`, (event) => {
@@ -1440,15 +1441,15 @@ class BucketSidebarView extends ItemView {
 
         if (expanded) this.renderFolderChildren(parent, rootEntry, child, depth + 1, rootAriaLevel);
       } else if (isBucketFile(child)) {
-        const spacer = document.createElement("span");
+        const spacer = createSpan();
         spacer.className = "bucket-disclosure-spacer";
         row.appendChild(spacer);
-        const icon = document.createElement("span");
+        const icon = createSpan();
         icon.className = "bucket-entry-icon";
         icon.setAttribute("aria-hidden", "true");
         setIcon(icon, "file-text");
         row.appendChild(icon);
-        const label = document.createElement("button");
+        const label = createEl("button");
         label.type = "button";
         label.className = "bucket-entry-label";
         label.textContent = displayName(child.path);
@@ -1457,7 +1458,7 @@ class BucketSidebarView extends ItemView {
           void this.app.workspace.getLeaf(false).openFile(child);
         });
         row.appendChild(label);
-        const actions = document.createElement("div");
+        const actions = createDiv();
         actions.className = "bucket-row-actions";
         iconButton(actions, "more-horizontal", localize`${child.basename} 的更多操作`, (event) => {
           event.stopPropagation();
@@ -1703,7 +1704,7 @@ class BucketSidebarView extends ItemView {
       if (typeof value.bucketId !== "string" || typeof value.entryId !== "string") return null;
       if (!findBucket(this.plugin.data, value.bucketId)) return null;
       return { bucketId: value.bucketId, entryId: value.entryId };
-    } catch (_error) {
+    } catch {
       return null;
     }
   }

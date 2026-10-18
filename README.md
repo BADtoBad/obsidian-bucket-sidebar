@@ -7,6 +7,7 @@ Curate your workspace without rearranging your files. Bucket Sidebar groups refe
 ## Features
 
 - Multiple spaces, named Buckets, pinned references, and nested folders.
+- References currently support Markdown notes and PDFs. Other attachment types remain available in Obsidian's native File Explorer.
 - The same file can appear in multiple Buckets without duplication.
 - Create notes or folders inside a selected path.
 - Rename-aware references, selection, drag reordering, folder exclusions, and undo for supported Bucket operations.
@@ -18,7 +19,9 @@ Removing a Bucket reference does not delete the original file. Explicit file del
 
 Requires **Obsidian 1.7.7+**. Back up `.obsidian` and close the Vault. Copy `main.js`, `manifest.json`, and `styles.css` from Releases into `.obsidian/plugins/bucket-sidebar/`. Preserve your existing `data.json`, reopen Obsidian, and enable **Bucket Sidebar**.
 
-Keyline is recommended for the coordinated visual style but is not required. The first bilingual public preview is **0.5.4**. Desktop macOS is the release-tested environment; mobile is not yet validated.
+Keyline is recommended for the coordinated visual style but is not required. Current release: **0.5.5**. Disabling and re-enabling the plugin preserves its pane placement, and view-opening errors are handled. Desktop macOS is the release-tested environment; mobile is not yet device-validated. See [release verification](RELEASE-VERIFICATION.md).
+
+Normal operation makes no network requests. References and settings are stored in this Vault's plugin `data.json`; notes are changed only by explicit file actions. No telemetry or self-updater is included.
 
 ## Build
 
@@ -27,6 +30,7 @@ Use Node.js 22 and pnpm 10.11.0:
 ```sh
 pnpm install --frozen-lockfile
 pnpm typecheck
+pnpm lint
 pnpm test
 pnpm build
 ```

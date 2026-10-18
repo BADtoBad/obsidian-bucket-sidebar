@@ -12,17 +12,17 @@ export class CreateFolderModal extends Modal {
   onOpen(): void {
     this.titleEl.textContent = localize("新建文件夹");
     this.modalEl.classList.add("bucket-create-folder-modal");
-    const form = document.createElement("form");
+    const form = createEl("form");
     form.className = "bucket-text-form";
-    const location = document.createElement("p");
+    const location = createEl("p");
     location.className = "bucket-folder-location";
     location.textContent = localize`创建位置：${this.parentPath}`;
-    const input = document.createElement("input");
+    const input = createEl("input");
     input.type = "text";
     input.className = "bucket-text-input";
     input.value = localize("未命名文件夹");
     input.setAttribute("aria-label", localize("文件夹名称"));
-    const error = document.createElement("p");
+    const error = createEl("p");
     error.className = "bucket-folder-error";
     error.setAttribute("role", "alert");
     error.hidden = true;
@@ -33,21 +33,20 @@ export class CreateFolderModal extends Modal {
       input.setCustomValidity("");
     };
     input.addEventListener("input", clearError);
-    const actions = document.createElement("div");
+    const actions = createDiv();
     actions.className = "bucket-modal-actions";
-    const cancel = document.createElement("button");
+    const cancel = createEl("button");
     cancel.type = "button";
     cancel.textContent = localize("取消");
     cancel.addEventListener("click", () => this.close());
-    const submit = document.createElement("button");
+    const submit = createEl("button");
     submit.type = "submit";
     submit.className = "mod-cta";
     submit.textContent = localize("创建");
     let pending = false;
     // Inline errors own validation feedback; avoid a second browser tooltip.
     form.noValidate = true;
-    form.addEventListener("submit", async (event) => {
-      event.preventDefault();
+    const create = async (): Promise<void> => {
       if (pending) return;
       pending = true;
       clearError();
@@ -72,6 +71,11 @@ export class CreateFolderModal extends Modal {
         form.removeAttribute("aria-busy");
         if (input.isConnected) input.focus();
       }
+    };
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      // create handles storage errors inline; the event listener stays synchronous.
+      void create();
     });
     actions.append(cancel, submit);
     form.append(location, input, error, actions);

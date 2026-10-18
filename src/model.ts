@@ -114,7 +114,7 @@ export function normalizeRowHeight(value: unknown): number {
 export function normalizeFolderSortOrders(value: unknown): Record<string, FolderSortOrder> | undefined {
   if (!value || typeof value !== "object" || Array.isArray(value)) return undefined;
   const result: Record<string, FolderSortOrder> = {};
-  for (const [raw, order] of Object.entries(value)) {
+  for (const [raw, order] of Object.entries(value as Record<string, unknown>)) {
     const path = cleanVaultPath(raw);
     if (!path || path.split("/").some(part => [".", "..", "__proto__", "constructor", "prototype"].includes(part))) continue;
     if (order === "name-asc" || order === "created-desc") result[path] = order;

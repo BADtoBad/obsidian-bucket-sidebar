@@ -18,7 +18,9 @@
 
 需要 **Obsidian 1.7.7+**。备份 `.obsidian` 并关闭库，将 Releases 的 `main.js`、`manifest.json`、`styles.css` 放入 `.obsidian/plugins/bucket-sidebar/`，保留自己的 `data.json`。重新打开 Obsidian，启用 **Bucket Sidebar**。
 
-建议搭配 Keyline 获得统一样式，但并非强制依赖。首次双语公开预览版为 **0.5.4**。发行验收环境为 macOS 桌面端，移动端尚未验证。
+建议搭配 Keyline 获得统一样式，但并非强制依赖。当前版本 **0.5.5**，修复停用后侧栏位置重置及打开视图时的错误处理。发行验收环境为 macOS 桌面端，移动端尚未实机验证。详见 [发行验证](RELEASE-VERIFICATION.md)。
+
+引用目前支持 Markdown 和 PDF；其它附件仍可在 Obsidian 原生文件浏览器中使用。常规操作不发起网络请求，无遥测或自更新；引用和设置保存在本库插件的 `data.json`，只有明确的文件操作才改动笔记。构建检查需包含 `pnpm lint`。
 
 ## 构建与反馈
 

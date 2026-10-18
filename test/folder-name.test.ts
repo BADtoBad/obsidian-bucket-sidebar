@@ -2,6 +2,12 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { validateFolderName } from "../src/folder-name";
 
+test('all ASCII control characters stay rejected after validation cleanup', () => {
+  for (const code of [...Array.from({ length: 32 }, (_, i) => i), 127]) {
+    assert.ok(validateFolderName(`folder${String.fromCharCode(code)}name`), String(code));
+  }
+});
+
 for (const name of ["项目甲", " New folder ", "2026.09 项目", "素材 📁", "设计-稿_v2", "a..b", "COM10"]) {
   test(`valid child folder name: ${name}`, () => assert.equal(validateFolderName(name), null));
 }

@@ -4,7 +4,7 @@ export function validateFolderName(value: string): string | null {
   const name = value.trim();
   if (!name) return localize("请输入文件夹名称。");
   if (name.startsWith(".")) return localize("文件夹名称不能以点开头。");
-  if (/[\\/:*?"<>|\u0000-\u001f\u007f]/.test(name)) {
+  if (/[\\/:*?"<>|]/.test(name) || [...name].some(char => char.charCodeAt(0) < 32 || char.charCodeAt(0) === 127)) {
     return localize("请输入单个文件夹名称，不能包含斜杠、冒号或其他无效字符。");
   }
   if (name.endsWith(".")) return localize("文件夹名称不能以点结尾。");

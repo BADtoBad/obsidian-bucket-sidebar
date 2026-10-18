@@ -33,7 +33,7 @@ function eligibleChildren(folder: TFolder): Array<TFile | TFolder> {
 }
 
 function appendIcon(parent: HTMLElement, icon: string, className: string): HTMLElement {
-  const element = document.createElement("span");
+  const element = createSpan();
   element.className = className;
   element.setAttribute("aria-hidden", "true");
   setIcon(element, icon);
@@ -68,10 +68,10 @@ export class BatchTargetPickerModal extends Modal {
     this.titleEl.textContent = localize`添加到 ${this.bucket.name}`;
     this.contentEl.replaceChildren();
 
-    const layout = document.createElement("div");
+    const layout = createDiv();
     layout.className = "bucket-target-picker";
 
-    const search = document.createElement("input");
+    const search = createEl("input");
     search.type = "search";
     search.className = "bucket-target-search";
     search.placeholder = localize("搜索 Markdown、PDF 或文件夹…");
@@ -81,27 +81,27 @@ export class BatchTargetPickerModal extends Modal {
       this.renderTree(false);
     });
 
-    this.treeEl = document.createElement("div");
+    this.treeEl = createDiv();
     this.treeEl.className = "bucket-target-tree";
     this.treeEl.setAttribute("role", "tree");
     this.treeEl.setAttribute("aria-label", localize("Vault 文件层级"));
 
-    const hint = document.createElement("div");
+    const hint = createDiv();
     hint.className = "bucket-target-hint";
     hint.textContent = localize("选择文件夹会包含其后代；可继续取消不需要的子项。");
 
-    const footer = document.createElement("div");
+    const footer = createDiv();
     footer.className = "bucket-target-footer";
-    this.countEl = document.createElement("div");
+    this.countEl = createDiv();
     this.countEl.className = "bucket-target-count";
 
-    const footerActions = document.createElement("div");
+    const footerActions = createDiv();
     footerActions.className = "bucket-target-footer-actions";
-    const cancel = document.createElement("button");
+    const cancel = createEl("button");
     cancel.type = "button";
     cancel.textContent = localize("取消");
     cancel.addEventListener("click", () => this.close());
-    this.confirmButton = document.createElement("button");
+    this.confirmButton = createEl("button");
     this.confirmButton.type = "button";
     this.confirmButton.className = "mod-cta";
     this.confirmButton.addEventListener("click", () => this.submit());
@@ -143,7 +143,7 @@ export class BatchTargetPickerModal extends Modal {
     }
 
     if (!this.treeEl.hasChildNodes()) {
-      const empty = document.createElement("div");
+      const empty = createDiv();
       empty.className = "bucket-target-empty";
       empty.textContent = this.query ? localize("没有匹配的文件或文件夹") : localize("Vault 中没有 Markdown、PDF 或文件夹");
       this.treeEl.appendChild(empty);
@@ -158,7 +158,7 @@ export class BatchTargetPickerModal extends Modal {
     depth: number,
     matchCache: Map<string, boolean>
   ): void {
-    const row = document.createElement("div");
+    const row = createDiv();
     row.className = "bucket-target-row";
     row.style.setProperty("--bucket-picker-indent", `${depth * 14}px`);
     row.setAttribute("role", "treeitem");
@@ -170,7 +170,7 @@ export class BatchTargetPickerModal extends Modal {
     if (isFolder) row.setAttribute("aria-expanded", String(expanded));
 
     if (isFolder) {
-      const disclosure = document.createElement("button");
+      const disclosure = createEl("button");
       disclosure.type = "button";
       disclosure.className = "bucket-target-disclosure";
       disclosure.setAttribute("aria-label", expanded ? localize`收起 ${file.path}` : localize`展开 ${file.path}`);
@@ -178,14 +178,14 @@ export class BatchTargetPickerModal extends Modal {
       disclosure.addEventListener("click", () => this.toggleFolder(file.path));
       row.appendChild(disclosure);
     } else {
-      const spacer = document.createElement("span");
+      const spacer = createSpan();
       spacer.className = "bucket-target-disclosure-spacer";
       row.appendChild(spacer);
     }
 
     appendIcon(row, isFolder ? "folder" : "file-text", "bucket-target-icon");
 
-    const label = document.createElement("button");
+    const label = createEl("button");
     label.type = "button";
     label.className = "bucket-target-label";
     label.textContent = file instanceof TFile && file.extension.toLowerCase() === "md" ? file.basename : file.name;
@@ -204,7 +204,7 @@ export class BatchTargetPickerModal extends Modal {
     if (existing) row.classList.add("is-existing");
     row.setAttribute("aria-selected", String(selected));
 
-    const toggle = document.createElement("button");
+    const toggle = createEl("button");
     toggle.type = "button";
     toggle.className = "bucket-target-toggle";
     if (selected) toggle.classList.add("is-selected");
