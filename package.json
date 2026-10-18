@@ -1,0 +1,27 @@
+{
+  "name": "obsidian-bucket-sidebar",
+  "version": "0.5.4",
+  "private": true,
+  "description": "Virtual multi-bucket sidebar for Obsidian",
+  "scripts": {
+    "build": "node esbuild.config.mjs production",
+    "dev": "node esbuild.config.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "node scripts/build-tests.mjs && node --test .test-build/*.test.mjs",
+    "check:legacy": "node scripts/check-legacy.mjs",
+    "check:ui": "node scripts/check-ui.mjs",
+    "verify": "pnpm typecheck && pnpm test && pnpm build && pnpm check:legacy && pnpm check:ui"
+  },
+  "devDependencies": {
+    "@codemirror/state": "6.4.1",
+    "@codemirror/view": "6.35.0",
+    "@types/codemirror": "5.60.8",
+    "@types/node": "16.18.11",
+    "codemirror": "5.65.16",
+    "esbuild": "0.17.3",
+    "moment": "2.29.4",
+    "obsidian": "1.7.2",
+    "style-mod": "4.1.2",
+    "typescript": "4.9.5"
+  }
+}

@@ -1,0 +1,886 @@
+.bucket-sidebar-root {
+  --bucket-row-height: 32px;
+  --bucket-group-gap: 14px;
+  --bucket-pinned-gap: 14px;
+  --bucket-switcher-background: var(--background-secondary-alt, var(--background-secondary));
+  --bucket-switcher-active-background: var(--background-primary);
+  --bucket-switcher-active-color: var(--text-normal);
+  --bucket-switcher-active-icon: var(--text-accent);
+  --bucket-switcher-active-shadow: 0 1px 3px var(--background-modifier-box-shadow);
+  height: 100%;
+  min-width: 0;
+  overflow: auto;
+  color: var(--text-normal);
+  background: transparent;
+}
+
+.bucket-row-actions {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+}
+
+.bucket-sidebar-root button.bucket-icon-button {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  margin: 0;
+  padding: 4px;
+  border: 0;
+  border-radius: var(--radius-s);
+  color: var(--icon-color);
+  background-color: transparent;
+  background-image: none;
+  box-shadow: none;
+  line-height: 1;
+}
+
+.bucket-sidebar-root button.bucket-icon-button:hover:not(:disabled) {
+  color: var(--icon-color-hover);
+  background-color: var(--nav-item-background-hover, var(--background-modifier-hover));
+}
+
+.bucket-sidebar-root button.bucket-icon-button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.bucket-list {
+  padding: 4px;
+}
+
+/* aria-labelledby names the tree without Obsidian treating its whole area as
+   a tooltip target. Individual names and action hints keep their behavior. */
+.bucket-accessible-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.bucket-space-switcher-wrap {
+  display: flex;
+  justify-content: center;
+  min-width: 0;
+  padding: 6px 6px 3px;
+}
+
+.bucket-space-switcher {
+  display: flex;
+  flex: 0 1 auto;
+  align-items: center;
+  width: max-content;
+  min-width: 0;
+  max-width: 100%;
+  min-height: 36px;
+  padding: 3px;
+  overflow: hidden;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 999px;
+  background-color: var(--bucket-switcher-background);
+}
+
+.bucket-space-tabs {
+  display: inline-flex;
+  flex: 0 1 auto;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.bucket-space-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.bucket-sidebar-root button.bucket-space-tab {
+  appearance: none;
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+  margin: 0;
+  padding: 0 6px;
+  gap: 5px;
+  overflow: hidden;
+  border: 0;
+  border-radius: 999px;
+  color: var(--text-muted);
+  background-color: transparent;
+  background-image: none;
+  box-shadow: none;
+  font-size: var(--font-ui-smaller);
+  font-weight: var(--font-medium);
+  line-height: 1;
+  text-shadow: none;
+  transform: none;
+  white-space: nowrap;
+}
+
+.bucket-sidebar-root button.bucket-space-tab:hover {
+  color: var(--text-normal);
+  background-color: var(--background-modifier-hover);
+}
+
+.bucket-sidebar-root button.bucket-space-tab.is-active {
+  color: var(--text-normal);
+  background-color: var(--background-modifier-hover);
+  box-shadow: inset 0 0 0 1px var(--background-modifier-border-hover, var(--background-modifier-border));
+}
+
+.bucket-sidebar-root button.bucket-space-add {
+  appearance: none;
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  margin: 0;
+  margin-inline-start: 2px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  color: var(--text-muted);
+  background: transparent;
+  box-shadow: none;
+}
+
+.bucket-sidebar-root button.bucket-space-add:hover {
+  color: var(--text-normal);
+  background-color: var(--background-modifier-hover);
+}
+
+.bucket-sidebar-root button.bucket-space-add svg {
+  width: 15px;
+  height: 15px;
+  stroke-width: 1.8;
+}
+
+.bucket-space-tab-icon {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+}
+
+.bucket-space-tab-icon svg {
+  width: 15px;
+  height: 15px;
+  stroke-width: 1.8;
+}
+
+.bucket-space-tab-label {
+  max-width: 112px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bucket-pinned-section {
+  min-width: 0;
+  margin: 0 0 4px;
+}
+
+.bucket-section-heading {
+  min-height: 20px;
+  padding: 5px 8px 3px;
+  color: var(--text-faint);
+  font-size: var(--font-ui-smaller);
+  font-weight: var(--font-semibold);
+  line-height: 1.25;
+  text-align: left;
+}
+
+.bucket-pinned-entries {
+  min-width: 0;
+}
+
+.bucket-groups-heading {
+  margin-top: var(--bucket-pinned-gap);
+  padding-top: var(--bucket-pinned-gap);
+  border-top: 1px solid var(--background-modifier-border);
+}
+
+.bucket-section {
+  position: relative;
+  margin: 0;
+  border-radius: var(--radius-s);
+}
+
+.bucket-section + .bucket-section {
+  margin-top: var(--bucket-group-gap);
+}
+
+.bucket-section.is-drop-target {
+  background-color: var(--nav-item-background-hover, var(--background-modifier-hover));
+  box-shadow: inset 2px 0 0 var(--interactive-accent);
+}
+
+.bucket-header,
+.bucket-entry-row {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  min-height: var(--bucket-row-height);
+  border-radius: var(--radius-s);
+}
+
+.bucket-header {
+  padding: 0 2px;
+  font-size: var(--font-ui-small);
+  font-weight: var(--font-semibold);
+}
+
+.bucket-header:hover,
+.bucket-header:focus-within,
+.bucket-entry-row:hover,
+.bucket-entry-row:focus-within {
+  background-color: var(--nav-item-background-hover, var(--background-modifier-hover));
+}
+
+.bucket-leading-icon,
+.bucket-entry-icon {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  color: var(--icon-color);
+}
+
+.bucket-leading-icon svg,
+.bucket-entry-icon svg,
+.bucket-icon-button svg {
+  width: 15px;
+  height: 15px;
+  stroke-width: 1.8;
+}
+
+.bucket-sidebar-root button.bucket-name,
+.bucket-sidebar-root button.bucket-entry-label {
+  appearance: none;
+  display: block;
+  flex: 1 1 auto;
+  min-width: 0;
+  height: var(--bucket-row-height);
+  min-height: 0;
+  margin: 0;
+  padding: 0 4px;
+  overflow: hidden;
+  border: 0;
+  border-radius: 0;
+  color: inherit;
+  background-color: transparent;
+  background-image: none;
+  box-shadow: none;
+  font: inherit;
+  line-height: var(--bucket-row-height);
+  text-align: left;
+  text-overflow: ellipsis;
+  text-shadow: none;
+  transform: none;
+  white-space: nowrap;
+}
+
+.bucket-sidebar-root button.bucket-name:hover,
+.bucket-sidebar-root button.bucket-name:active,
+.bucket-sidebar-root button.bucket-name:focus,
+.bucket-sidebar-root button.bucket-entry-label:hover,
+.bucket-sidebar-root button.bucket-entry-label:active,
+.bucket-sidebar-root button.bucket-entry-label:focus {
+  color: inherit;
+  background-color: transparent;
+  background-image: none;
+  box-shadow: none;
+  transform: none;
+}
+
+.bucket-count {
+  flex: 0 0 auto;
+  min-width: 18px;
+  padding: 0 4px;
+  color: var(--text-faint);
+  font-size: var(--font-ui-smaller);
+  font-weight: var(--font-normal);
+  text-align: center;
+}
+
+.bucket-row-actions {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.bucket-header:hover .bucket-row-actions,
+.bucket-header:focus-within .bucket-row-actions,
+.bucket-entry-row:hover .bucket-row-actions,
+.bucket-entry-row:focus-within .bucket-row-actions {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.bucket-disclosure {
+  width: 20px;
+  min-width: 20px;
+  height: 24px;
+  padding: 4px;
+}
+
+.bucket-disclosure-spacer {
+  flex: 0 0 20px;
+  width: 20px;
+}
+
+.bucket-entries {
+  padding-inline-start: 10px;
+}
+
+.bucket-entry-wrapper {
+  min-width: 0;
+}
+
+.bucket-entry-row {
+  padding-inline-start: 2px;
+  color: var(--text-muted);
+  font-size: var(--font-ui-small);
+  font-weight: var(--font-normal);
+}
+
+.bucket-entry-row.is-active {
+  color: var(--nav-item-color-active, var(--text-accent));
+  background-color: var(--nav-item-background-active, var(--background-modifier-hover));
+  font-weight: var(--nav-item-weight-active, var(--font-medium));
+}
+
+.bucket-entry-row.is-dragging {
+  opacity: 0.45;
+}
+
+.bucket-entry-row.is-missing {
+  color: var(--text-faint);
+}
+
+.bucket-missing-label {
+  flex: 0 0 auto;
+  margin-inline-end: 4px;
+  padding: 1px 4px;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--radius-s);
+  color: var(--text-faint);
+  font-size: var(--font-ui-smaller);
+  line-height: 1.2;
+}
+
+.bucket-nested-row {
+  padding-inline-start: calc(2px + var(--bucket-indent, 0px));
+}
+
+.bucket-sidebar-root button.bucket-entry-empty {
+  appearance: none;
+  display: block;
+  justify-content: flex-start;
+  width: calc(100% - 4px);
+  min-height: var(--bucket-row-height);
+  margin: 1px 2px;
+  padding: 0 8px 0 30px;
+  overflow: hidden;
+  border: 0;
+  border-radius: var(--radius-s);
+  color: var(--text-faint);
+  background-color: transparent;
+  background-image: none;
+  box-shadow: none;
+  font-size: var(--font-ui-smaller);
+  text-align: left;
+  text-overflow: ellipsis;
+  text-shadow: none;
+  transform: none;
+  white-space: nowrap;
+}
+
+.bucket-sidebar-root button.bucket-entry-empty:hover,
+.bucket-sidebar-root button.bucket-entry-empty:focus-visible {
+  color: var(--text-muted);
+  background-color: var(--nav-item-background-hover, var(--background-modifier-hover));
+  background-image: none;
+  box-shadow: none;
+  transform: none;
+}
+
+.bucket-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin: 12px 8px;
+  padding: 8px 6px;
+  border: 0;
+  color: var(--text-muted);
+  background: transparent;
+}
+
+.bucket-empty-heading {
+  margin-bottom: 6px;
+  color: var(--text-normal);
+  font-size: var(--font-ui-medium);
+  font-weight: var(--font-semibold);
+}
+
+.bucket-empty-description {
+  margin-bottom: 12px;
+  font-size: var(--font-ui-small);
+  line-height: 1.45;
+}
+
+.bucket-text-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.bucket-text-input {
+  width: 100%;
+}
+
+.bucket-create-folder-modal {
+  width: min(420px, calc(100vw - 32px));
+}
+
+.bucket-folder-location {
+  margin: 0 0 12px;
+  color: var(--text-muted);
+  font-size: var(--font-ui-small);
+  overflow-wrap: anywhere;
+}
+
+.bucket-folder-error {
+  margin: 8px 0 0;
+  color: var(--text-error);
+  font-size: var(--font-ui-small);
+}
+
+.bucket-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 16px;
+  gap: 8px;
+}
+
+.bucket-space-icon-modal {
+  width: min(520px, calc(100vw - 48px));
+}
+
+.bucket-space-icon-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(86px, 1fr));
+  gap: 6px;
+}
+
+.bucket-space-icon-modal button.bucket-space-icon-choice {
+  appearance: none;
+  display: flex;
+  min-width: 0;
+  min-height: 68px;
+  margin: 0;
+  padding: 8px 6px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-m);
+  color: var(--text-muted);
+  background-color: transparent;
+  background-image: none;
+  box-shadow: none;
+  font-size: var(--font-ui-smaller);
+  text-shadow: none;
+  transform: none;
+}
+
+.bucket-space-icon-modal button.bucket-space-icon-choice:hover,
+.bucket-space-icon-modal button.bucket-space-icon-choice.is-selected {
+  color: var(--text-normal);
+  background-color: var(--background-modifier-hover);
+}
+
+.bucket-space-icon-modal button.bucket-space-icon-choice.is-selected {
+  border-color: var(--interactive-accent);
+}
+
+.bucket-space-icon-choice-symbol {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+}
+
+.bucket-space-icon-choice-symbol svg {
+  width: 20px;
+  height: 20px;
+  stroke-width: 1.8;
+}
+
+.bucket-space-icon-choice-label {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bucket-target-picker-modal {
+  width: min(720px, calc(100vw - 48px));
+}
+
+.bucket-target-picker-modal .modal-content {
+  display: flex;
+  min-height: 0;
+  flex-direction: column;
+}
+
+.bucket-target-picker {
+  display: flex;
+  min-height: 380px;
+  height: min(68vh, 640px);
+  flex-direction: column;
+}
+
+.bucket-target-search {
+  flex: 0 0 auto;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.bucket-target-tree {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 4px;
+  overflow: auto;
+  border-top: 1px solid var(--divider-color, var(--background-modifier-border));
+  border-bottom: 1px solid var(--divider-color, var(--background-modifier-border));
+  background: var(--background-secondary);
+}
+
+.bucket-target-row {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  min-height: 30px;
+  padding-inline-start: calc(2px + var(--bucket-picker-indent, 0px));
+  border-radius: var(--radius-s);
+  color: var(--text-muted);
+  font-size: var(--font-ui-small);
+}
+
+.bucket-target-row:hover,
+.bucket-target-row:focus-within {
+  color: var(--text-normal);
+  background-color: var(--nav-item-background-hover, var(--background-modifier-hover));
+}
+
+.bucket-target-row.is-selected {
+  color: var(--text-normal);
+}
+
+.bucket-target-row.is-existing {
+  color: var(--text-muted);
+}
+
+.bucket-target-disclosure,
+.bucket-target-disclosure-spacer {
+  flex: 0 0 22px;
+  width: 22px;
+  height: 26px;
+}
+
+.bucket-target-picker-modal button.bucket-target-disclosure {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 4px;
+  border: 0;
+  border-radius: var(--radius-s);
+  color: var(--icon-color);
+  background: transparent;
+  box-shadow: none;
+}
+
+.bucket-target-picker-modal button.bucket-target-disclosure:hover {
+  background-color: var(--nav-item-background-hover, var(--background-modifier-hover));
+}
+
+.bucket-target-icon {
+  display: inline-flex;
+  flex: 0 0 22px;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  color: var(--icon-color);
+}
+
+.bucket-target-icon svg,
+.bucket-target-disclosure svg,
+.bucket-target-toggle svg {
+  width: 15px;
+  height: 15px;
+  stroke-width: 1.8;
+}
+
+.bucket-target-picker-modal button.bucket-target-label {
+  appearance: none;
+  display: block;
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  height: 30px;
+  margin: 0;
+  padding: 0 5px;
+  overflow: hidden;
+  border: 0;
+  border-radius: 0;
+  color: inherit;
+  background: transparent;
+  box-shadow: none;
+  font: inherit;
+  line-height: 30px;
+  text-align: left;
+  text-overflow: ellipsis;
+  text-shadow: none;
+  transform: none;
+  white-space: nowrap;
+}
+
+.bucket-target-picker-modal button.bucket-target-label:hover,
+.bucket-target-picker-modal button.bucket-target-label:focus,
+.bucket-target-picker-modal button.bucket-target-label:active {
+  color: inherit;
+  background: transparent;
+  box-shadow: none;
+  transform: none;
+}
+
+.bucket-target-picker-modal button.bucket-target-toggle {
+  appearance: none;
+  display: inline-flex;
+  flex: 0 0 20px;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  margin: 0 5px 0 6px;
+  padding: 2px;
+  border: 1px solid var(--text-faint);
+  border-radius: 50%;
+  color: var(--text-muted);
+  background: transparent;
+  box-shadow: none;
+}
+
+.bucket-target-picker-modal button.bucket-target-toggle:hover:not(:disabled) {
+  border-color: var(--interactive-accent);
+  color: var(--interactive-accent);
+  background: transparent;
+}
+
+.bucket-target-picker-modal button.bucket-target-toggle.is-selected,
+.bucket-target-picker-modal button.bucket-target-toggle.is-partial {
+  border-color: var(--interactive-accent);
+  color: var(--interactive-accent);
+  background: transparent;
+}
+
+.bucket-target-picker-modal button.bucket-target-toggle.is-existing {
+  border-color: var(--text-faint);
+  color: var(--text-faint);
+  opacity: 0.75;
+}
+
+.bucket-target-hint {
+  flex: 0 0 auto;
+  padding: 8px 2px 2px;
+  color: var(--text-faint);
+  font-size: var(--font-ui-smaller);
+  line-height: 1.35;
+}
+
+.bucket-target-footer {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  min-height: 44px;
+  padding-top: 8px;
+}
+
+.bucket-target-count {
+  flex: 1 1 auto;
+  color: var(--text-muted);
+  font-size: var(--font-ui-small);
+}
+
+.bucket-target-footer-actions {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 8px;
+}
+
+.bucket-target-empty {
+  padding: 20px 10px;
+  color: var(--text-faint);
+  font-size: var(--font-ui-small);
+  text-align: center;
+}
+
+/*
+ * Theme compatibility boundary
+ * ----------------------------
+ * Some community themes skin every `button` with high-specificity or
+ * `!important` borders/backgrounds. These controls are parts of a source-list
+ * row, not standalone form buttons, so only their structural chrome is
+ * isolated here. Colors still come from Obsidian semantic variables.
+ */
+.bucket-sidebar-root :is(
+  button.bucket-icon-button,
+  button.bucket-space-tab,
+  button.bucket-name,
+  button.bucket-entry-label,
+  button.bucket-entry-empty
+),
+.bucket-target-picker-modal :is(
+  button.bucket-target-disclosure,
+  button.bucket-target-label
+) {
+  appearance: none !important;
+  border: 0 !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  transform: none !important;
+}
+
+.bucket-sidebar-root button.bucket-icon-button,
+.bucket-sidebar-root button.bucket-entry-empty,
+.bucket-target-picker-modal button.bucket-target-disclosure {
+  border-radius: var(--radius-s) !important;
+}
+
+.bucket-sidebar-root button.bucket-space-tab {
+  border-radius: 999px !important;
+}
+
+.bucket-sidebar-root button.bucket-name,
+.bucket-sidebar-root button.bucket-entry-label,
+.bucket-target-picker-modal button.bucket-target-label {
+  border-radius: 0 !important;
+}
+
+.bucket-sidebar-root button.bucket-space-add {
+  appearance: none !important;
+  margin-inline-start: 2px !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  transform: none !important;
+}
+
+.bucket-space-icon-modal button.bucket-space-icon-choice {
+  appearance: none !important;
+  border: 1px solid transparent !important;
+  border-radius: var(--radius-m) !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  transform: none !important;
+}
+
+.bucket-target-picker-modal button.bucket-target-toggle {
+  appearance: none !important;
+  border: 1px solid var(--text-faint) !important;
+  border-radius: 50% !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  transform: none !important;
+}
+
+.bucket-sidebar-root button.bucket-icon-button:hover:not(:disabled),
+.bucket-sidebar-root button.bucket-entry-empty:hover,
+.bucket-sidebar-root button.bucket-entry-empty:focus-visible,
+.bucket-target-picker-modal button.bucket-target-disclosure:hover {
+  background-color: var(--nav-item-background-hover, var(--background-modifier-hover)) !important;
+}
+
+.bucket-sidebar-root button.bucket-space-tab:hover,
+.bucket-sidebar-root button.bucket-space-tab.is-active,
+.bucket-sidebar-root button.bucket-space-add:hover,
+.bucket-space-icon-modal button.bucket-space-icon-choice:hover,
+.bucket-space-icon-modal button.bucket-space-icon-choice.is-selected {
+  background-color: var(--background-modifier-hover) !important;
+}
+
+.bucket-sidebar-root button.bucket-space-tab.is-active {
+  background-color: var(--bucket-switcher-active-background) !important;
+  color: var(--bucket-switcher-active-color) !important;
+  box-shadow: var(--bucket-switcher-active-shadow) !important;
+}
+
+.bucket-sidebar-root button.bucket-space-tab.is-active .bucket-space-tab-icon {
+  color: var(--bucket-switcher-active-icon);
+}
+
+.bucket-space-icon-modal button.bucket-space-icon-choice.is-selected,
+.bucket-target-picker-modal button.bucket-target-toggle:hover:not(:disabled),
+.bucket-target-picker-modal button.bucket-target-toggle.is-selected,
+.bucket-target-picker-modal button.bucket-target-toggle.is-partial {
+  border-color: var(--interactive-accent) !important;
+}
+
+.bucket-target-picker-modal button.bucket-target-toggle.is-existing {
+  border-color: var(--text-faint) !important;
+}
+
+.bucket-sidebar-root button:focus-visible,
+.bucket-text-form input:focus-visible,
+.bucket-space-icon-modal button:focus-visible,
+.bucket-target-picker-modal button:focus-visible,
+.bucket-target-picker-modal input:focus-visible {
+  outline: 2px solid var(--interactive-accent);
+  outline-offset: 1px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bucket-sidebar-root *,
+  .bucket-sidebar-root *::before,
+  .bucket-sidebar-root *::after,
+  .bucket-target-picker-modal *,
+  .bucket-target-picker-modal *::before,
+  .bucket-target-picker-modal *::after,
+  .bucket-space-icon-modal *,
+  .bucket-space-icon-modal *::before,
+  .bucket-space-icon-modal *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
