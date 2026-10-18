@@ -6,9 +6,9 @@ A research note can belong beside a project brief, on a reading shelf and in thi
 
 [中文](README.zh-CN.md) · [Downloads](https://github.com/BADtoBad/obsidian-bucket-sidebar/releases) · [Keyline theme](https://github.com/BADtoBad/obsidian-keyline)
 
-![Bucket Sidebar in light mode: space tabs, a pinned note and three groups on the right](assets/keyline-showcase-light.png)
+![Bucket Sidebar in light mode: Work and Personal spaces, a pinned note, nested folders, a PDF and the same Project brief in two groups](assets/bucket-sidebar-light.png)
 
-**Bucket is the grouped panel on the right.** These native screenshots use the fictional, all-English [Keyline Studio example Vault](https://github.com/BADtoBad/obsidian-keyline#try-the-example-vault), with the optional Keyline theme and Keyline interactions.
+**Bucket is the sidebar on the left.** These are real Obsidian 1.13.7 screenshots of the published Bucket Sidebar **0.5.7**, using the default light and dark themes. The fictional, all-English showcase has no other community plugins or custom CSS.
 
 ## Organise around your work
 
@@ -20,11 +20,11 @@ A research note can belong beside a project brief, on a reading shelf and in thi
 
 ## A sidebar for the task at hand
 
-The example separates Studio and Personal spaces, pins a starting note, and groups references under In focus, Reference shelf and Daily practice. You can build your own view of the same Vault instead of repeatedly reorganising its real folders. English and Chinese menus and settings follow Obsidian’s interface language.
+The example separates **Work** and **Personal** spaces, pins **Start here**, and groups references under **Project Atlas**, **Research** and **Writing**. The same **Project brief** appears in Project Atlas and Writing; both references open one Markdown file. The expanded Research folder shows nested interview notes alongside a PDF reference. You can build your own view without rearranging the Vault's real folders. English and Chinese menus and settings follow Obsidian’s interface language.
 
-![Bucket Sidebar in dark mode: the same pinned references and groups without rearranging the original files](assets/keyline-showcase-dark.png)
+![Bucket Sidebar in dark mode: the same Work space and shared Project brief with the default Obsidian theme](assets/bucket-sidebar-dark.png)
 
-The coloured file-type icons in the **native File Explorer on the left** and the workspace switcher come from Keyline interactions. Bucket currently references Markdown and PDF files; other attachment formats shown in the native explorer are not Bucket features.
+Bucket currently supports **Markdown notes, PDFs and folders**. The note, checklist, callout and table on the right are Obsidian's native Markdown rendering, not extra Bucket features.
 
 ## Recommended companions
 

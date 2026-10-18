@@ -6,9 +6,9 @@
 
 [English](README.md) · [下载](https://github.com/BADtoBad/obsidian-bucket-sidebar/releases) · [Keyline 主题](https://github.com/BADtoBad/obsidian-keyline)
 
-![亮色 Bucket Sidebar：右侧展示空间切换、置顶笔记与三个分组](assets/keyline-showcase-light.png)
+![亮色 Bucket Sidebar：Work 与 Personal 空间、置顶笔记、嵌套文件夹、PDF，以及同时出现在两个分组中的 Project brief](assets/bucket-sidebar-light.png)
 
-**Bucket 是右侧的分组面板。** 真实截图使用虚构、全英文的 [Keyline Studio 示例库](https://github.com/BADtoBad/obsidian-keyline#try-the-example-vault)，搭配可选的 Keyline 主题与 Keyline 交互插件。
+**Bucket 是左侧的侧栏。** 这两张图是 Obsidian 1.13.7 中已发布的 **Bucket Sidebar 0.5.7** 的真实截图，使用 Obsidian 默认亮色、暗色主题。示例内容为虚构、全英文资料，没有安装其他第三方插件或自定义 CSS。
 
 ## 围绕正在做的事组织资料
 
@@ -20,11 +20,11 @@
 
 ## 为当前任务准备的侧栏
 
-示例中，Studio 与 Personal 各自成为一个空间，起始笔记被置顶，资料按 In focus、Reference shelf 和 Daily practice 分组。你也可以为同一个 Vault 建立自己的使用视图，而不用反复重整真实目录。菜单与设置支持中文和英文，跟随 Obsidian 界面语言。
+示例中，**Work** 与 **Personal** 是两个空间，**Start here** 被置顶，资料按 **Project Atlas、Research、Writing** 分组。同一篇 **Project brief** 同时出现在 Project Atlas 和 Writing 中，两个引用打开的是同一份 Markdown 文件。展开的 Research 文件夹展示嵌套的访谈笔记，旁边还有 PDF 引用。你可以按任务建立自己的使用视图，不用反复重整真实目录。菜单与设置支持中文和英文，跟随 Obsidian 界面语言。
 
-![暗色 Bucket Sidebar：相同的置顶引用与分组，不改变原文件位置](assets/keyline-showcase-dark.png)
+![暗色 Bucket Sidebar：默认 Obsidian 主题下相同的 Work 空间与共享的 Project brief 引用](assets/bucket-sidebar-dark.png)
 
-**左侧原生文件浏览器**的分类图标和底栏工作区切换来自 Keyline 交互插件。Bucket 当前支持 Markdown 与 PDF 文件引用，原生浏览器里展示的其它附件类型不属于 Bucket 功能。
+Bucket 当前支持 **Markdown 笔记、PDF 与文件夹**。右侧笔记中的任务列表、提示框与表格由 Obsidian 原生 Markdown 渲染，并非 Bucket 额外提供的功能。
 
 ## 推荐搭配
 
