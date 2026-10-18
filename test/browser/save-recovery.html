@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bucket save-recovery check — isolated host</title>
+<style>
+  body { max-width: 900px; margin: 32px auto; padding: 0 24px; font: 16px/1.5 system-ui; color: #242424; background: #f6f6f6; }
+  body.dark { color: #eee; background: #202020; color-scheme: dark; }
+  h1 { font-size: 24px; margin: 0 0 8px; }
+  .note { font-size: 14px; margin: 0 0 24px; }
+  fieldset { margin: 16px 0; border: 1px solid #999; border-radius: 8px; }
+  label { display: inline-block; margin: 8px 20px 8px 0; }
+  button, select { font: inherit; padding: 6px 12px; margin: 6px 8px 6px 0; }
+  :focus-visible { outline: 3px solid #397ded; outline-offset: 2px; }
+  dl { border-top: 1px solid #999; padding-top: 12px; }
+  dt { font-weight: 650; margin-top: 12px; }
+  dd { margin: 0; }
+  .fixture-notice { border: 1px solid #999; border-radius: 8px; padding: 16px; margin: 12px 0; overflow-wrap: anywhere; }
+  #status { font-weight: 650; }
+</style>
+<h1>Bucket save-recovery check</h1>
+<p class="note">Production save logic and notice content, with a simulated host and in-memory storage.<br>
+No Vault files are loaded or changed. This does not verify Obsidian’s native notice layout or real disk I/O.</p>
+<fieldset><legend>Test controls</legend>
+  <label>Language <select id="language"><option value="en">English</option><option value="zh">中文</option></select></label>
+  <label><input id="mode" type="checkbox"> Dark preview</label><br>
+  <label><input id="fail" type="checkbox" checked> Simulate save failure</label>
+  <label><input id="hold" type="checkbox"> Hold next write</label>
+  <button id="finish" disabled>Finish held write</button>
+</fieldset>
+<div>
+  <button id="names">Hide Space names</button>
+  <button id="height">Set row height to 40</button>
+  <button id="remove">Remove Reading group</button>
+  <button id="undo">Undo group change</button>
+  <button id="reload">Reload saved fixture</button>
+</div>
+<p>Status: <span id="status"></span> · Save attempts: <span id="attempts">0</span> · Held writes: <span id="pending">0</span></p>
+<dl>
+  <dt>Current session</dt><dd id="memory"></dd>
+  <dt>Simulated storage</dt><dd id="stored"></dd>
+</dl>
+<h2>Save notice</h2>
+<div id="notices"></div>
+<script type="module" src="/fixture.js"></script>
+</html>

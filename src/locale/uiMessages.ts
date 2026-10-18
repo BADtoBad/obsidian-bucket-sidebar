@@ -1,4 +1,8 @@
 export const english: Record<string, string> = {
+  'Bucket Sidebar：修改尚未保存，当前会话中仍保留。请在关闭库或停用插件前重试保存。': 'Bucket Sidebar: Changes are not saved yet. They remain in this session. Retry saving before closing the vault or disabling the plugin.',
+  '重试保存': 'Retry saving',
+  '正在保存…': 'Saving…',
+  'Bucket Sidebar：未保存的修改已保存。': 'Bucket Sidebar: Your unsaved changes have been saved.',
   '灰色': 'Gray', '蓝色': 'Blue', '红色': 'Red', '绿色': 'Green', '紫色': 'Purple', '琥珀': 'Amber', '青色': 'Cyan', '橙色': 'Orange', '粉色': 'Pink',
   '文件': 'File', '文档': 'Document', '笔记': 'Note', '图片': 'Image', '音乐': 'Music', '音频': 'Audio', '视频': 'Video', '文件夹': 'Folder', '书': 'Book', '星': 'Star', '工作': 'Work', '日历': 'Calendar', '代码': 'Code', '收藏': 'Favorite', '项目': 'Project',
   '更改图标': 'Change icon', '图标跟随自动规则': 'Use automatic icon', '搜索图标：文件、日历、star…': 'Search icons: file, calendar, star…', '搜索图标': 'Search icons', '可选图标': 'Available icons', '颜色': 'Color', '图标颜色': 'Icon color', '跟随自动规则': 'Automatic', '自定义颜色…': 'Custom color…', '自定义图标颜色': 'Custom icon color',

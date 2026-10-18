@@ -5,8 +5,8 @@ import { localize } from "./locale/ui";
 
 export interface BucketSettingsHost {
   data: Pick<BucketData, "settings">;
-  setShowSpaceNames(value: boolean): Promise<void>;
-  setSidebarRowHeight(value: number): Promise<void>;
+  setShowSpaceNames(value: boolean): Promise<boolean>;
+  setSidebarRowHeight(value: number): Promise<boolean>;
 }
 
 // Use only the old SDK's controls. The returned shape also implements the

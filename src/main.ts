@@ -281,6 +281,12 @@ export default class BucketSidebarPlugin extends Plugin {
   private history: HistoryEntry[] = [];
   private creatingFolders = new Set<string>();
   private pendingSubfolders = new Set<string>();
+  private saveQueue: Promise<boolean> = Promise.resolve(true);
+  private saveRevision = 0;
+  private savedRevision = 0;
+  private pendingSaves = 0;
+  private saveFailureNotice: Notice | null = null;
+  private unloading = false;
 
   promptCreateFolder(folderPath: string): void {
     const parent = this.app.vault.getAbstractFileByPath(folderPath);
@@ -374,6 +380,11 @@ export default class BucketSidebarPlugin extends Plugin {
 
   async onload(): Promise<void> {
     this.data = normalizeData(await this.loadData());
+    this.register(() => {
+      this.unloading = true;
+      this.saveFailureNotice?.hide();
+      this.saveFailureNotice = null;
+    });
     this.addSettingTab(new BucketSidebarSettingTab(this.app, this));
 
     this.registerView(VIEW_TYPE_BUCKET_SIDEBAR, (leaf) => new BucketSidebarView(leaf, this));
@@ -688,17 +699,17 @@ export default class BucketSidebarPlugin extends Plugin {
     return this.history.length > 0;
   }
 
-  async setSidebarRowHeight(value: number): Promise<void> {
+  async setSidebarRowHeight(value: number): Promise<boolean> {
     const rowHeight = normalizeRowHeight(value);
-    if (this.data.settings.rowHeight === rowHeight) return;
+    if (this.data.settings.rowHeight === rowHeight) return this.retryUnsavedChanges();
     this.data.settings.rowHeight = rowHeight;
-    await this.persist();
+    return this.persist();
   }
 
-  async setShowSpaceNames(value: boolean): Promise<void> {
-    if (this.data.settings.showSpaceNames === value) return;
+  async setShowSpaceNames(value: boolean): Promise<boolean> {
+    if (this.data.settings.showSpaceNames === value) return this.retryUnsavedChanges();
     this.data.settings.showSpaceNames = value;
-    await this.persist();
+    return this.persist();
   }
 
   addFolderSortMenu(menu: Menu, file: TAbstractFile | null): void {
@@ -749,14 +760,75 @@ export default class BucketSidebarPlugin extends Plugin {
     if (this.history.length > 30) this.history.shift();
   }
 
-  private async persist(): Promise<void> {
-    try {
-      await this.saveData(this.data);
-      this.refreshViews();
-    } catch (error) {
-      console.error("Bucket Sidebar: failed to save data", error);
-      new Notice(localize("Bucket Sidebar 保存失败，请查看开发者控制台"));
-    }
+  get hasUnsavedChanges(): boolean {
+    return this.savedRevision < this.saveRevision;
+  }
+
+  retryUnsavedChanges(): Promise<boolean> {
+    if (this.unloading) return Promise.resolve(false);
+    // A repeated click joins the last scheduled save instead of multiplying writes.
+    if (this.pendingSaves > 0) return this.saveQueue;
+    return this.hasUnsavedChanges ? this.persist() : Promise.resolve(true);
+  }
+
+  private persist(): Promise<boolean> {
+    if (this.unloading) return Promise.resolve(false);
+    const revision = ++this.saveRevision;
+    const snapshot = cloneData(this.data);
+    this.pendingSaves++;
+    // Save independent snapshots in order, so an older slow write cannot finish
+    // after a newer one and silently replace it. A failed write never poisons the queue.
+    const operation = this.saveQueue.then(async () => {
+      // Do not start queued writes after disable; an already-started host write
+      // cannot be cancelled here. Recovery must happen before closing the vault.
+      if (this.unloading) return false;
+      let saved = false;
+      try {
+        await this.saveData(snapshot);
+        this.savedRevision = revision;
+        saved = true;
+      } catch (error) {
+        console.error("Bucket Sidebar: failed to save data", error);
+      }
+      if (!this.unloading) {
+        // View failures are not storage failures and must not break future saves.
+        try { this.refreshViews(); }
+        catch (error) { console.error("Bucket Sidebar: failed to refresh views", error); }
+        try {
+          if (!saved) this.showSaveFailure();
+          else if (!this.hasUnsavedChanges && this.saveFailureNotice) {
+            this.saveFailureNotice.hide();
+            this.saveFailureNotice = null;
+            new Notice(localize("Bucket Sidebar：未保存的修改已保存。"));
+          }
+        } catch (error) { console.error("Bucket Sidebar: failed to show save status", error); }
+      }
+      return saved;
+    });
+    this.saveQueue = operation.finally(() => { this.pendingSaves--; });
+    return this.saveQueue;
+  }
+
+  private showSaveFailure(): void {
+    if (this.saveFailureNotice?.noticeEl.isConnected) return;
+    const message = createFragment();
+    const text = createSpan();
+    text.textContent = localize("Bucket Sidebar：修改尚未保存，当前会话中仍保留。请在关闭库或停用插件前重试保存。");
+    const retry = createEl("button");
+    retry.type = "button";
+    retry.textContent = localize("重试保存");
+    retry.addEventListener("click", event => {
+      event.stopPropagation();
+      retry.disabled = true;
+      retry.textContent = localize("正在保存…");
+      void this.retryUnsavedChanges().finally(() => {
+        retry.disabled = false;
+        retry.textContent = localize("重试保存");
+      });
+    });
+    message.append(text, createEl("br"), retry);
+    // No modal, no timer-based retry loop, no rollback of the user's newer edits.
+    this.saveFailureNotice = new Notice(message, 0);
   }
 
   private refreshViews(): void {
