@@ -55,6 +55,7 @@ import { validateFolderName } from "./folder-name";
 import { compareFolderChildren } from "./folder-sort";
 import { expandFolderAncestors } from "./folder-expansion";
 import { bucketSettingRows } from "./settings";
+import { matchesSavedSnapshot } from "./saved-data";
 
 const VIEW_TYPE_BUCKET_SIDEBAR = "bucket-sidebar-view";
 const DRAG_MIME = "application/x-obsidian-bucket-entry";
@@ -785,6 +786,13 @@ export default class BucketSidebarPlugin extends Plugin {
       let saved = false;
       try {
         await this.saveData(snapshot);
+        // Some host versions resolve saveData even when the adapter write fails.
+        // Verify through the public read API before marking this revision saved.
+        // Never replace the newer in-memory session with the readback snapshot.
+        const stored: unknown = await this.loadData();
+        if (!matchesSavedSnapshot(snapshot, stored)) {
+          throw new Error("Saved Bucket data could not be verified");
+        }
         this.savedRevision = revision;
         saved = true;
       } catch (error) {

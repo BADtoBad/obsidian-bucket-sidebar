@@ -55,13 +55,22 @@ export async function host(language, options = {}) {
     }
   }
   const writes = [], notices = [], errors = [], cleanups = [];
-  let refreshes = 0, stored = copy(options.initial || initial);
+  let refreshes = 0, reads = 0, stored = copy(options.initial || initial);
   class Plugin {
     constructor(app) { this.app = app; }
-    loadData() { return Promise.resolve(copy(stored)); }
+    async loadData() {
+      reads++;
+      return options.read ? options.read(copy(stored), reads) : copy(stored);
+    }
     async saveData(data) {
       writes.push(copy(data));
-      await options.save?.(data, writes.length);
+      try { await options.save?.(data, writes.length); }
+      catch (error) {
+        // The installed Obsidian 1.13.7 writeJson catches adapter errors and
+        // resolves without writing. Keep this distinct from a rejecting API.
+        if (options.swallowSaveErrors) return;
+        throw error;
+      }
       stored = copy(data);
     }
     addSettingTab(tab) { this.tab = tab; }
@@ -95,5 +104,6 @@ export async function host(language, options = {}) {
   });
   await plugin.onload();
   return { plugin, tab: plugin.tab, Setting, writes, notices, errors,
-    refreshes: () => refreshes, stored: () => copy(stored), unload: () => cleanups.forEach(fn => fn()) };
+    refreshes: () => refreshes, reads: () => reads,
+    stored: () => copy(stored), unload: () => cleanups.forEach(fn => fn()) };
 }

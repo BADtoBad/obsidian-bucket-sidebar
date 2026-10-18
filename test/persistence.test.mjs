@@ -12,6 +12,83 @@ const warnings = h => h.notices.filter(n => n.duration === 0);
 const retryButton = h => warnings(h).at(-1).message.children.find(n => n.tag === "button");
 
 for (const language of ["en", "zh"]) {
+  test(`silently swallowed host write errors stay dirty and can recover (${language})`, async () => {
+    let available = false;
+    const h = await host(language, { swallowSaveErrors: true,
+      save: () => { if (!available) failure(); } });
+    const before = h.stored();
+    const sessionBefore = copy(h.plugin.data);
+    assert.equal(await h.plugin.setShowSpaceNames(false), false);
+    assert.equal(await h.plugin.setSidebarRowHeight(40), false);
+    assert.equal(h.plugin.hasUnsavedChanges, true);
+    assert.deepEqual(h.stored(), before);
+    assert.equal(warnings(h).length, 1);
+    assert.equal(h.reads(), 3, "read back each completed save, in addition to startup");
+    available = true;
+    assert.equal(await h.plugin.retryUnsavedChanges(), true);
+    assert.equal(h.plugin.hasUnsavedChanges, false);
+    assert.deepEqual(h.stored(), copy(h.plugin.data));
+    assert.deepEqual(h.stored().spaces, sessionBefore.spaces);
+    assert.equal(h.stored().settings.rowHeight, 40);
+    assert.equal(h.stored().settings.showSpaceNames, false);
+    assert.equal(warnings(h)[0].noticeEl.isConnected, false);
+  });
+}
+
+for (const result of [null, undefined, { settings: { showSpaceNames: false } }]) {
+  test(`missing or partial readback cannot confirm a whole-data save (${JSON.stringify(result)})`, async () => {
+    const h = await host("en", { read: (stored, count) => count > 1 ? result : stored });
+    assert.equal(await h.plugin.setShowSpaceNames(false), false);
+    assert.equal(h.plugin.hasUnsavedChanges, true);
+    assert.equal(warnings(h).length, 1);
+    assert.equal(h.plugin.data.spaces.length, 1, "readback must never replace the session");
+  });
+}
+
+test("readback errors retain state, and a later verified retry clears the warning", async () => {
+  const h = await host("en", { read: (stored, count) => { if (count === 2) failure(); return stored; } });
+  assert.equal(await h.plugin.setShowSpaceNames(false), false);
+  assert.equal(h.plugin.hasUnsavedChanges, true);
+  assert.equal(await h.plugin.retryUnsavedChanges(), true);
+  assert.equal(h.plugin.hasUnsavedChanges, false);
+  assert.equal(warnings(h)[0].noticeEl.isConnected, false);
+});
+
+test("next save waits for previous readback, not only its write", async () => {
+  const readback = deferred();
+  const h = await host("en", { read: (stored, count) => count === 2 ? readback.promise : stored });
+  const a = h.plugin.setShowSpaceNames(false);
+  const b = h.plugin.setSidebarRowHeight(40);
+  await flush();
+  assert.equal(h.writes.length, 1);
+  assert.equal(h.plugin.hasUnsavedChanges, true);
+  readback.resolve(h.stored());
+  assert.equal(await a, true);
+  assert.equal(await b, true);
+  assert.deepEqual(h.stored(), copy(h.plugin.data));
+});
+
+test("JSON object key order does not cause a false save failure", async () => {
+  const reorder = value => Array.isArray(value) ? value.map(reorder) :
+    value && typeof value === "object" ? Object.fromEntries(Object.entries(value).reverse().map(([k, v]) => [k, reorder(v)])) : value;
+  const h = await host("en", { read: (stored, count) => count > 1 ? reorder(stored) : stored });
+  assert.equal(await h.plugin.setShowSpaceNames(false), true);
+  assert.equal(h.plugin.hasUnsavedChanges, false);
+  assert.equal(warnings(h).length, 0);
+});
+
+test("matching settings cannot conceal missing groups in readback", async () => {
+  const h = await host("en", { read: (stored, count) => {
+    if (count > 1) stored.spaces[0].buckets = [];
+    return stored;
+  } });
+  assert.equal(await h.plugin.setShowSpaceNames(false), false);
+  assert.equal(h.plugin.hasUnsavedChanges, true);
+  assert.equal(h.plugin.data.spaces[0].buckets.length, 1);
+  assert.equal(warnings(h).length, 1);
+});
+
+for (const language of ["en", "zh"]) {
   test(`failed save preserves the whole session and provides a persistent retry (${language})`, async () => {
     const h = await host(language, { save: failure });
     const before = h.stored();
