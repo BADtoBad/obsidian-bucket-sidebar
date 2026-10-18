@@ -33,6 +33,8 @@
 
 ## 安装与升级
 
+可在 [Bucket Sidebar Community 页面](https://community.obsidian.md/plugins/bucket-sidebar)点击 **Add to Obsidian**，也可按下方说明手动安装。
+
 需要 **Obsidian 1.7.7+**。备份 `.obsidian` 并关闭库，将 Releases 的 `main.js`、`manifest.json`、`styles.css` 放入 `.obsidian/plugins/bucket-sidebar/`，保留自己的 `data.json`。重新打开 Obsidian，启用 **Bucket Sidebar**。
 
 建议搭配 Keyline 获得统一样式，但并非强制依赖。当前版本 **0.5.5**，修复停用后侧栏位置重置及打开视图时的错误处理。发行验收环境为 macOS 桌面端，移动端尚未实机验证。详见 [发行验证](RELEASE-VERIFICATION.md)。

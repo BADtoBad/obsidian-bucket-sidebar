@@ -33,6 +33,8 @@ The screenshots also use the optional Keyline theme and Keyline interactions. Th
 
 ## Install / upgrade
 
+Use **Add to Obsidian** on the [Bucket Sidebar Community page](https://community.obsidian.md/plugins/bucket-sidebar), or use the manual installation steps below.
+
 Requires **Obsidian 1.7.7+**. Back up `.obsidian` and close the Vault. Copy `main.js`, `manifest.json`, and `styles.css` from Releases into `.obsidian/plugins/bucket-sidebar/`. Preserve your existing `data.json`, reopen Obsidian, and enable **Bucket Sidebar**.
 
 Keyline is recommended for the coordinated visual style but is not required. Current release: **0.5.5**. Disabling and re-enabling the plugin preserves its pane placement, and view-opening errors are handled. Desktop macOS is the release-tested environment; mobile is not yet device-validated. See [release verification](RELEASE-VERIFICATION.md).
