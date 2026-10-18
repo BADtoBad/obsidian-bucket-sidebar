@@ -15,6 +15,17 @@ function findBlock(selectorPattern, label) {
   return match[1];
 }
 
+const accessibleLabel = findBlock("\\.bucket-accessible-label", "读屏标签");
+for (const declaration of ["position: absolute", "width: 0", "height: 0", "overflow: hidden"]) {
+  if (!accessibleLabel.includes(declaration)) failures.push(`读屏标签缺少隐藏声明：${declaration}`);
+}
+if (/clip-path\s*:|display\s*:\s*none|visibility\s*:\s*hidden/.test(accessibleLabel)) {
+  failures.push("读屏标签应使用旧环境兼容的隐藏方式，且保留可访问名称");
+}
+if (!mainSource.includes('list.setAttribute("aria-labelledby", treeLabel.id)')) {
+  failures.push("文件树必须保留其读屏标签关联");
+}
+
 const labelBlock = findBlock(
   "\\.bucket-sidebar-root button\\.bucket-name,\\s*\\.bucket-sidebar-root button\\.bucket-entry-label",
   "名称按钮"

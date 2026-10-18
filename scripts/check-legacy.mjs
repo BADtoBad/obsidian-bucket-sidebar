@@ -13,6 +13,7 @@ const forbiddenApis = [
   "Object.hasOwn",
   "structuredClone",
   ".replaceAll(",
+  ".flatMap(",
   "registerBasesView",
   "onExternalSettingsChange",
   "loadIfDeferred",

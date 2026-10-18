@@ -56,6 +56,7 @@ import { BatchTargetPickerModal } from "./target-picker";
 import { CreateFolderModal } from "./create-folder-modal";
 import { validateFolderName } from "./folder-name";
 import { compareFolderChildren } from "./folder-sort";
+import { expandFolderAncestors } from "./folder-expansion";
 
 const VIEW_TYPE_BUCKET_SIDEBAR = "bucket-sidebar-view";
 const DRAG_MIME = "application/x-obsidian-bucket-entry";
@@ -312,14 +313,7 @@ export default class BucketSidebarPlugin extends Plugin {
     try {
       await this.app.vault.createFolder(path);
       created = true;
-      for (const entry of [...space.pinnedEntries, ...space.buckets.flatMap(bucket => bucket.entries)]) {
-        if (entry.type !== "folder" || !(folderPath === entry.path || folderPath.startsWith(entry.path + "/"))) continue;
-        entry.expanded = true;
-        const paths = new Set(entry.expandedPaths || []);
-        let ancestor = folderPath;
-        while (ancestor !== entry.path) { paths.add(ancestor); ancestor = ancestor.slice(0, ancestor.lastIndexOf("/")); }
-        entry.expandedPaths = [...paths];
-      }
+      expandFolderAncestors(space, folderPath);
       await this.persist();
       return null;
     } catch (error) {
@@ -357,14 +351,7 @@ export default class BucketSidebarPlugin extends Plugin {
         }
       }
       if (!created) throw new Error("No available note name");
-      for (const entry of [...space.pinnedEntries, ...space.buckets.flatMap(bucket => bucket.entries)]) {
-        if (entry.type !== "folder" || !(folderPath === entry.path || folderPath.startsWith(entry.path + "/"))) continue;
-        entry.expanded = true;
-        const paths = new Set(entry.expandedPaths || []);
-        let ancestor = folderPath;
-        while (ancestor !== entry.path) { paths.add(ancestor); ancestor = ancestor.slice(0, ancestor.lastIndexOf("/")); }
-        entry.expandedPaths = [...paths];
-      }
+      expandFolderAncestors(space, folderPath);
       await this.persist();
       const leaf = this.app.workspace.getLeaf(false);
       await leaf.openFile(created);

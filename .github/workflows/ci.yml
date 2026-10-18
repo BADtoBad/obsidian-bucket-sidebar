@@ -24,3 +24,4 @@ jobs:
       - run: pnpm build
       - run: pnpm check:legacy
       - run: pnpm check:ui
+      - run: pnpm check:release

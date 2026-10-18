@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bucket accessible-label regression check</title>
+<link rel="stylesheet" href="/styles.css">
+<style>
+  body { margin: 24px; font: 16px system-ui; background: #eee; color: #222; }
+  h1 { font-size: 22px; }
+  main { display: grid; grid-template-columns: repeat(2, minmax(240px, 1fr)); gap: 16px; }
+  section { padding: 20px; border: 1px solid #aaa; background: white; }
+  section.dark { background: #202020; color: #eee; }
+  h2 { font-size: 18px; margin: 0 0 16px; }
+  [role=treeitem] { padding: 8px; }
+  [role=treeitem]:focus-visible { outline: 2px solid #2680dc; }
+  .baseline .bucket-accessible-label { width: 1px; height: 1px; clip-path: inset(50%); }
+</style>
+<h1>Bucket accessible-label regression check</h1>
+<p>Isolated CSS / accessibility fixture. No Vault data or host application is loaded.</p>
+<main></main>
+<script>
+  const root = document.querySelector('main');
+  for (const mode of ['light', 'dark']) for (const language of ['en', 'zh']) {
+    const panel = document.createElement('section');
+    panel.className = mode;
+    panel.lang = language;
+    const heading = document.createElement('h2');
+    heading.textContent = `${mode} / ${language}`;
+    panel.append(heading);
+    for (const variant of ['baseline', 'current']) {
+      const tree = document.createElement('div');
+      tree.className = variant;
+      tree.setAttribute('role', 'tree');
+      const label = document.createElement('span');
+      label.id = `label-${mode}-${language}-${variant}`;
+      label.className = 'bucket-accessible-label';
+      label.textContent = language === 'en' ? 'Virtual Bucket list' : '虚拟 Bucket 列表';
+      tree.setAttribute('aria-labelledby', label.id);
+      tree.append(label);
+      const item = document.createElement('div');
+      item.setAttribute('role', 'treeitem');
+      item.tabIndex = 0;
+      item.textContent = language === 'en' ? 'Research notes' : '研究笔记';
+      tree.append(item);
+      panel.append(tree);
+    }
+    root.append(panel);
+  }
+</script>
+</html>

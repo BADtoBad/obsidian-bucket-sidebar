@@ -54,13 +54,15 @@
 }
 
 /* aria-labelledby names the tree without Obsidian treating its whole area as
-   a tooltip target. Individual names and action hints keep their behavior. */
+   a tooltip target. A zero-size box hides the label without clip-path or
+   removing its accessible name. Individual action hints keep their behavior. */
 .bucket-accessible-label {
   position: absolute;
-  width: 1px;
-  height: 1px;
+  width: 0;
+  height: 0;
+  padding: 0;
+  border: 0;
   overflow: hidden;
-  clip-path: inset(50%);
   white-space: nowrap;
 }
 

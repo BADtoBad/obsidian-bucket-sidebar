@@ -1,4 +1,20 @@
-# Release verification — 2026-10-18
+# Bucket Sidebar 0.5.6 — patch verification, 2026-10-19
+
+- Frozen-lockfile dependency install completed with pnpm 10.11.0. Local checks used Node.js 24.19.0; CI separately uses Node.js 22.
+- 71 regression tests passed, including six new folder-expansion cases covering pinned and grouped references, nested paths, existing expansion/exclusion state, unrelated paths, non-ASCII names, and Space isolation.
+- Both the full TypeScript project and a browser-only ES2018 project without ambient Node types passed. The latter prevents Node type declarations from masking unsupported browser APIs.
+- Obsidian ESLint passed with zero errors and zero unsafe-type diagnostics, including a separate browser-only type-aware run. Three existing advisory warnings remain: the legacy language fallback, stable command ID, and settings-search API. None was disabled for this patch.
+- Production build, ES2018/CommonJS legacy checks, UI contracts, version consistency, and standard release-asset staging passed.
+- The isolated accessible-label browser fixture passed light/dark and English/Chinese checks: both baseline and current trees expose their names in the accessibility tree; visible row dimensions and offsets match. This is a CSS/accessibility regression check, not a complete Obsidian-host test or VoiceOver listening test.
+- The theme compatibility boundary and existing `!important` declarations are unchanged. The hidden label no longer uses `clip-path`.
+- The 0.5.6 release stages only `main.js`, `manifest.json`, and `styles.css`. Existing releases and their downloadable ZIPs are retained.
+- No personal Vault installation or data change was performed. Minimum supported Obsidian version remains 1.7.7. No new physical old-Mac or mobile certification is claimed.
+
+To reproduce the label check: run `node scripts/serve-label-check.mjs`, open the printed loopback URL, inspect both tree names in the browser accessibility view, and compare each pair of rows. Stop the server after use.
+
+## Historical full-host baseline — 2026-10-18
+
+The checks below apply to the previous full-host baseline, not a fresh host run of 0.5.6.
 
 Versions: Keyline theme 0.8.23; optional Keyline interactions 0.7.4; Bucket Sidebar 0.5.5.
 
