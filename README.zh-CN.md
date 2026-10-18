@@ -42,13 +42,13 @@ Bucket 可以独立使用。搭配 **[Keyline 主题](https://github.com/BADtoBa
 
 ## 语言与兼容性
 
-当前版本为 **0.5.6**。界面支持中文和英文，切换 Obsidian 语言后重启生效；已保存的自定义名称保持不变。停用后重新启用插件会保留侧栏位置。发行验收环境为 macOS 桌面端，移动端尚未实机验证。详见 [发行验证](RELEASE-VERIFICATION.md)。
+当前版本为 **0.5.7**。界面支持中文和英文，切换 Obsidian 语言后重启生效；Obsidian 1.13+ 可以搜索设置，旧版保留相同控件。已保存的自定义名称保持不变。停用后重新启用插件会保留侧栏位置。发行验收环境为 macOS 桌面端，移动端尚未实机验证。详见 [发行验证](RELEASE-VERIFICATION.md)。
 
 ## 构建与反馈
 
 使用 Node.js 22 和 pnpm 10.11.0，运行 `pnpm install --frozen-lockfile`、`pnpm typecheck`、`pnpm lint`、`pnpm test`、`pnpm build`、`pnpm check:release`。
 
-类型检查还会在不载入 Node 全局类型的情况下验证浏览器端 ES2018 API。`check:release` 只将 `main.js`、`manifest.json` 和 `styles.css` 放入临时目录；插件发行附件仅上传这三个文件，手动安装 ZIP 应单独提供，不混入 Community 发行附件。
+类型检查还会在不载入 Node 全局类型的情况下验证浏览器端 ES2018 API。`check:release` 只将 `main.js`、`manifest.json` 和 `styles.css` 放入临时目录；正式发行通过 **Release with provenance** 流程构建、生成来源证明并核验这三个文件后发布。手动安装 ZIP 应单独提供，不混入 Community 发行附件。详见 [贡献与发行指南](CONTRIBUTING.md)。
 
 反馈请附版本、复现步骤和已去除隐私的截图，不要将私人 Vault 或插件数据文件上传到公开 Issue。
 

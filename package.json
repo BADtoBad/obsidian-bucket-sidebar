@@ -1,6 +1,6 @@
 {
   "name": "obsidian-bucket-sidebar",
-  "version": "0.5.6",
+  "version": "0.5.7",
   "private": true,
   "description": "Virtual multi-bucket sidebar for Obsidian",
   "scripts": {
@@ -8,7 +8,7 @@
     "build": "node esbuild.config.mjs production",
     "dev": "node esbuild.config.mjs",
     "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.runtime.json",
-    "test": "node scripts/build-tests.mjs && node --test .test-build/*.test.mjs",
+    "test": "node scripts/build-tests.mjs && node --test .test-build/*.test.mjs test/*.test.mjs",
     "check:legacy": "node scripts/check-legacy.mjs",
     "check:ui": "node scripts/check-ui.mjs",
     "check:release": "node scripts/stage-release.mjs",

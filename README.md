@@ -42,7 +42,7 @@ Requires **Obsidian 1.7.7+**. Back up `.obsidian` and close the Vault. Copy `mai
 
 ## Language and compatibility
 
-Current release: **0.5.6**. The interface supports English and Chinese; restart after changing Obsidian’s language. Existing user-defined names stay unchanged. Disabling and re-enabling the plugin preserves its pane placement. Desktop macOS is the release-tested environment; mobile is not yet device-validated. See [release verification](RELEASE-VERIFICATION.md).
+Current release: **0.5.7**. The interface supports English and Chinese; restart after changing Obsidian’s language. Settings are searchable on Obsidian 1.13+; older versions keep the same controls. Existing user-defined names stay unchanged. Disabling and re-enabling the plugin preserves its pane placement. Desktop macOS is the release-tested environment; mobile is not yet device-validated. See [release verification](RELEASE-VERIFICATION.md).
 
 ## Build
 
@@ -57,7 +57,7 @@ pnpm build
 pnpm check:release
 ```
 
-The type check also validates browser-only ES2018 APIs without ambient Node types. `check:release` stages exactly `main.js`, `manifest.json`, and `styles.css` in a temporary folder. Upload only these three files to a plugin release; optional manual-install ZIPs belong outside Community release assets.
+The type check also validates browser-only ES2018 APIs without ambient Node types. `check:release` stages exactly `main.js`, `manifest.json`, and `styles.css` in a temporary folder. Releases use the **Release with provenance** workflow to build, attest and verify these exact three files before publication. Optional manual-install ZIPs belong outside Community release assets. See [contributing and release instructions](CONTRIBUTING.md).
 
 ## Feedback and license
 

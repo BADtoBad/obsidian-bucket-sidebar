@@ -1,7 +1,7 @@
 {
   "id": "bucket-sidebar",
   "name": "Bucket Sidebar",
-  "version": "0.5.6",
+  "version": "0.5.7",
   "minAppVersion": "1.7.7",
   "description": "在侧栏用虚拟 Bucket 自由组织笔记和文件夹，不改变 Vault 的真实目录.",
   "author": "Charlie",

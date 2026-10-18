@@ -21,10 +21,7 @@ import {
   BucketEntry,
   BucketTarget,
   FolderSortOrder,
-  DEFAULT_ROW_HEIGHT,
   DEFAULT_SPACE_ICON,
-  MAX_ROW_HEIGHT,
-  MIN_ROW_HEIGHT,
   Space,
   addBucket,
   addEntryToBucket,
@@ -57,6 +54,7 @@ import { CreateFolderModal } from "./create-folder-modal";
 import { validateFolderName } from "./folder-name";
 import { compareFolderChildren } from "./folder-sort";
 import { expandFolderAncestors } from "./folder-expansion";
+import { bucketSettingRows } from "./settings";
 
 const VIEW_TYPE_BUCKET_SIDEBAR = "bucket-sidebar-view";
 const DRAG_MIME = "application/x-obsidian-bucket-entry";
@@ -776,6 +774,16 @@ class BucketSidebarSettingTab extends PluginSettingTab {
     this.bucketPlugin = plugin;
   }
 
+  // Obsidian 1.13+ indexes these rows and skips display(). Render callbacks
+  // deliberately use the existing whole-data setters, not automatic saveData.
+  getSettingDefinitions() {
+    return [{
+      type: "group" as const,
+      name: localize("外观"),
+      items: bucketSettingRows(this.bucketPlugin)
+    }];
+  }
+
   display(): void {
     this.containerEl.empty();
 
@@ -783,39 +791,10 @@ class BucketSidebarSettingTab extends PluginSettingTab {
       .setName(localize("外观"))
       .setHeading();
 
-    new Setting(this.containerEl)
-      .setName(localize("显示 Space 名称"))
-      .setDesc(localize("默认只显示图标。Space 数量较少时，可同时显示图标和名称。"))
-      .addToggle((toggle) => {
-        toggle
-          .setValue(this.bucketPlugin.data.settings.showSpaceNames)
-          .onChange((value) => {
-            void this.bucketPlugin.setShowSpaceNames(value);
-          });
-      });
-
-    const rowHeightSetting = new Setting(this.containerEl)
-      .setName(localize("侧栏行高"))
-      .setDesc(localize`调整 Bucket、文件夹和笔记的每行高度。范围 ${MIN_ROW_HEIGHT}–${MAX_ROW_HEIGHT}px，默认 ${DEFAULT_ROW_HEIGHT}px。`);
-
-    rowHeightSetting.addSlider((slider) => {
-      slider
-        .setLimits(MIN_ROW_HEIGHT, MAX_ROW_HEIGHT, 1)
-        .setValue(this.bucketPlugin.data.settings.rowHeight)
-        .setDynamicTooltip()
-        .onChange((value) => {
-          void this.bucketPlugin.setSidebarRowHeight(value);
-        });
-    });
-
-    rowHeightSetting.addExtraButton((button) => {
-      button
-        .setIcon("reset")
-        .setTooltip(localize("恢复默认行高"))
-        .onClick(() => {
-          void this.bucketPlugin.setSidebarRowHeight(DEFAULT_ROW_HEIGHT).then(() => this.display());
-        });
-    });
+    // Obsidian 1.7.7–1.12: same labels, controls and persistence as 1.13+.
+    for (const row of bucketSettingRows(this.bucketPlugin)) {
+      row.render(new Setting(this.containerEl).setName(row.name).setDesc(row.desc));
+    }
   }
 }
 

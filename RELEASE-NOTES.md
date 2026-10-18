@@ -1,27 +1,31 @@
-# Bucket Sidebar 0.5.6
+# Bucket Sidebar 0.5.7
 
 ## English
 
-A small compatibility and release-hygiene patch. No new features, data migration, or changes to your shortcuts.
+A small settings-discovery and release-trust patch. Minimum Obsidian version remains **1.7.7**.
 
-- Replace two `Array.flatMap` paths with typed ES2018-compatible iteration. Creating a note or subfolder still reveals matching pinned and grouped folder references.
-- Use scanner-compatible ending punctuation in the plugin manifest description.
-- Keep Community release attachments to the standard three files: `main.js`, `manifest.json`, and `styles.css`. Previous release ZIPs remain available.
-- Remove `clip-path` from the visually hidden tree label while preserving its accessible name and visible layout.
+- Make **Show Space names** and **Sidebar row height** discoverable in Obsidian 1.13+'s settings search. Older hosts keep their existing settings page, sharing the same controls and persistence.
+- Reset row height in place, without rebuilding the settings page. Settings changes still save the complete Bucket data, including spaces, references and sort preferences.
+- Build release files in GitHub Actions, generate and verify provenance attestations, then check uploaded bytes before publishing. Existing releases are never overwritten by this workflow.
+- Add an English/Chinese contributing guide with privacy, compatibility and release instructions.
 
-Validation: 71 regression tests, full and browser-only ES2018 type checks, zero ESLint errors/unsafe-type diagnostics, production build, compatibility and UI checks, and a four-case label accessibility/layout fixture. Existing unrelated advisory warnings remain; the Community score is determined by its independent scan. See [verification details](RELEASE-VERIFICATION.md) for test boundaries.
+No CSS changes, command-ID or shortcut changes, dependency upgrades, data migrations, or personal Vault installation. The retained theme-isolation rules and stable command ID may still produce Community advisories; this patch does not promise a different overall rating.
 
-Requires Obsidian 1.7.7+. Update through Community, or replace only the three plugin files in `.obsidian/plugins/bucket-sidebar/`. Keep your existing `data.json`.
+Validation: **83 tests passed**, including eight new English/Chinese legacy/declarative settings-contract cases and four release-validation cases. Type checks, lint, build, legacy checks, UI contracts and release-asset checks passed. The new settings tests exercise the production plugin with host stubs, **not a new real-Obsidian or mobile-device UI run**. See [verification details](RELEASE-VERIFICATION.md).
+
+Update through Community or replace only `main.js`, `manifest.json` and `styles.css` in `.obsidian/plugins/bucket-sidebar/`. Preserve your existing `data.json`.
 
 ## 中文
 
-本次只处理兼容性与发行规范，不增加功能，不迁移数据，也不改快捷键。
+本次只补充设置搜索、发行来源证明和贡献指南，最低版本仍为 **Obsidian 1.7.7**。
 
-- 将两处 `Array.flatMap` 改为有明确类型的 ES2018 兼容遍历；新建笔记或子文件夹后，仍展开对应的置顶和分组文件夹引用。
-- 修正插件描述的结尾标点，满足扫描规则。
-- Community 发行附件仅保留 `main.js`、`manifest.json`、`styles.css`；旧版本 ZIP 继续保留。
-- 移除隐藏读屏标签的 `clip-path`，保留可访问名称和原有可见布局。
+- Obsidian 1.13+ 可以搜索「显示 Space 名称」「侧栏行高」；旧版保留原有设置页，新旧路径共享控件与保存方式。
+- 恢复默认行高时只更新当前滑块，不重建整个设置页。修改设置仍保存完整 Bucket 数据，保留空间、引用与排序偏好。
+- 由 GitHub Actions 构建发行文件、生成并验证来源证明，再核对上传后的字节，最后公开发布；该流程不覆盖已有发行版本。
+- 添加中英文贡献指南，说明隐私保护、兼容性检查与发行流程。
 
-验证：71 项回归测试、完整及浏览器端 ES2018 类型检查通过；ESLint 无错误、无 unsafe 类型告警；构建、兼容性、界面检查，以及中英文／明暗模式标签检查通过。其余已知提示未在本次修改，Community 评级以独立复扫为准。测试边界见 [验证说明](RELEASE-VERIFICATION.md)。
+不改 CSS、命令 ID、快捷键或数据结构，不升级依赖，也不安装到个人 Vault。为兼容主题保留的强制样式和稳定命令 ID 仍可能触发 Community 提示，本次不承诺整体评级改变。
 
-需要 Obsidian 1.7.7 或更新版本。可通过 Community 更新，或只替换 `.obsidian/plugins/bucket-sidebar/` 下的三个插件文件；请保留原有 `data.json`。
+验证：**83 项测试通过**，新增 8 项中英／新旧设置接口测试与 4 项发行校验测试；类型、规范、构建、旧版语法、界面约束及发行附件检查通过。设置测试运行真实插件代码，但宿主为测试替身，**不等于新的 Obsidian 实机或移动端界面验收**。详见 [验证说明](RELEASE-VERIFICATION.md)。
+
+通过 Community 更新，或仅替换 `.obsidian/plugins/bucket-sidebar/` 下的 `main.js`、`manifest.json`、`styles.css`；请保留原有 `data.json`。

@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 
 const css = await readFile("styles.css", "utf8");
 const mainSource = await readFile("src/main.ts", "utf8");
+const settingsSource = await readFile("src/settings.ts", "utf8");
 const modelSource = await readFile("src/model.ts", "utf8");
 const pickerSource = await readFile("src/target-picker.ts", "utf8");
 const failures = [];
@@ -59,11 +60,16 @@ if (css.includes(".bucket-toolbar-title") || mainSource.includes('title.textCont
 if (!mainSource.includes('this.addAction("plus"')) {
   failures.push("高频操作应放入 Obsidian 原生视图操作区");
 }
-if (!mainSource.includes("extends PluginSettingTab") || !mainSource.includes(".addSlider(")) {
+if (!mainSource.includes("extends PluginSettingTab") || !settingsSource.includes(".addSlider(")) {
   failures.push("侧栏行高应通过 Obsidian 原生插件设置页调节");
 }
-if (!mainSource.includes('setName(localize("显示 Space 名称"))') || !mainSource.includes(".addToggle(")) {
+if (!settingsSource.includes('name: localize("显示 Space 名称")') || !settingsSource.includes(".addToggle(")) {
   failures.push("Space 名称显示方式必须可在插件设置中切换");
+}
+if (!mainSource.includes("getSettingDefinitions()") || !mainSource.includes("display(): void") ||
+    mainSource.split("bucketSettingRows(this.bucketPlugin)").length !== 3 ||
+    settingsSource.includes("saveData(") || /^\s*control\s*:/m.test(settingsSource)) {
+  failures.push("新旧设置页必须共享控件并使用原有完整数据保存方法");
 }
 if (!mainSource.includes('style.setProperty("--bucket-row-height"')) {
   failures.push("侧栏行高设置未应用到 Bucket 视图");

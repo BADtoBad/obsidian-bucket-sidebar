@@ -1,4 +1,15 @@
-# Bucket Sidebar 0.5.6 — patch verification, 2026-10-19
+# Bucket Sidebar 0.5.7 — patch verification, 2026-10-19
+
+- Same pinned dependencies and lockfile as 0.5.6; Obsidian minimum remains 1.7.7.
+- 83 automated tests passed: 71 existing regression tests, eight settings-contract cases and four release-policy cases. Settings tests execute the actual bundled plugin with a minimal host stub, exercise English/Chinese and old/new render paths, and confirm complete-data persistence, bounds, reset, no writes during indexing/rendering, and matching labels. They are not a replacement for actual host settings-search UI acceptance.
+- Full and browser-only ES2018 type checks, production build, legacy/API checks, UI contracts, version/asset checks and ESLint passed with zero errors. Two existing lint advisories remain (legacy language lookup and stable command ID); the missing settings-definition advisory is resolved locally.
+- CSS, saved-data model, dependency lockfile and all command IDs are unchanged from 0.5.6. The native controls remain keyboard-operable through the existing host components; no custom UI or theme styling was introduced.
+- No personal Vault installation or data changes. Native application automation was unavailable during this patch, so **no fresh real-Obsidian, old-Mac or mobile UI pass is claimed**. The historical 1.7.7/1.13.7 host baseline below remains historical.
+- The new manually dispatched GitHub workflow builds from `main`, generates and verifies attestations for all three files, stages a draft, validates both asset digests and downloaded bytes, then publishes. Existing releases/tags cause it to stop rather than overwrite. Check the linked GitHub Actions run and Community scan for external publication results; local checks alone do not establish either.
+
+Primary API reference: [Obsidian's dual-support migration guide](https://docs.obsidian.md/plugins/guides/migrate-declarative-settings). The old `display()` path and new `getSettingDefinitions()` share render callbacks. Automatic control saving is deliberately not used because settings are nested within the full Bucket data object.
+
+## Previous 0.5.6 patch verification — 2026-10-19
 
 - Frozen-lockfile dependency install completed with pnpm 10.11.0. Local checks used Node.js 24.19.0; CI separately uses Node.js 22.
 - 71 regression tests passed, including six new folder-expansion cases covering pinned and grouped references, nested paths, existing expansion/exclusion state, unrelated paths, non-ASCII names, and Space isolation.
