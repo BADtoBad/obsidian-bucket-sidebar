@@ -24,7 +24,7 @@ Versions: Keyline theme 0.8.23; optional Keyline interactions 0.7.4; Bucket Side
 
 - The old-core test uses today's Electron runtime. It is **not** a physical old-Mac, macOS 10.15, old WebView, iOS, Android, Windows or Linux device certification.
 - Mobile device acceptance and arbitrary third-party plugin combinations remain unverified. Bucket uses host APIs and has no Node-only runtime dependency, but this does not substitute for mobile testing.
-- Screenshots include optional companions; the theme itself does not supply JavaScript interactions. Marginalia and Journal View are not bundled.
+- Screenshots include optional companions; the theme itself does not supply JavaScript interactions.
 - GitHub publication is not Community directory acceptance. Theme and Bucket are prepared for independent Community submission. Interaction-plugin submission is on hold until publicly documented upstream permission is available; upstream MIT notices and provenance remain intact.
 
 ## Reproduce local checks
