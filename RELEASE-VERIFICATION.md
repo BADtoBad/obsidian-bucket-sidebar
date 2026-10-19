@@ -1,19 +1,21 @@
 # Bucket Sidebar — verification
 
-## Unreleased compact rows and mobile polish — 2026-10-19
+## Bucket Sidebar 0.5.8 — compact rows and mobile polish, 2026-10-19
+
+The 0.5.8 release combines the compact/mobile passes below with the pending save-recovery fixes: serialised complete-data snapshots, a persistent retry notice and read-back verification after host writes. Save-recovery regression tests are included in the 123-test total. This report records local verification; public release and Community scan results must be checked separately.
 
 - Desktop default/reset row height is now **28px** (previously 32px). Existing saved heights, including 32px, are preserved; no preference migration or configuration rewrite runs at startup. Bucket-owned row selectors now respect that preference even when Keyline supplies a different minimum.
 - The current view retains horizontal Space scrolling on refresh, reveals a newly selected Space and remembers each Space's vertical position for the lifetime of the view. These positions are not persisted or synced; closing the view clears them.
 - Mobile target picking initially focuses a non-editable heading, not the search input. Desktop deferred search focus remains, with a disconnected-element guard. The heading uses separate action/name lines on mobile, and the selection ring is visually 22px inside the unchanged 44px target. Full names remain in text/accessible content.
 - Mobile settings explicitly label the slider “Desktop row height” / “桌面行高” and explain that it does not change phone row height. These changes follow the Apple HIG distinction between touch area and visual control size, and respect software-keyboard intent.
-- Full and browser-only TypeScript checks, **123 automated tests**, production build, legacy/API checks and UI contracts passed. ESLint: zero errors, one existing stable-command-ID advisory. New tests execute the actual picker with mobile/desktop Platform stubs in both languages and verify new/reset defaults without overwriting stored preferences.
+- Full and browser-only TypeScript checks, **123 automated tests**, production build, legacy/API checks and UI contracts passed. Final release recheck: ESLint has zero errors and two existing advisories (legacy language lookup and the stable command ID). New tests execute the actual picker with mobile/desktop Platform stubs in both languages and verify new/reset defaults without overwriting stored preferences.
 - The owned Obsidian 1.13.7 macOS host harness passed **50 checks**: eight unchanged desktop comparisons using an existing 40px preference, default/Keyline 28px rendering, retained desktop search focus, 32 mobile layout cases, touch interactions, and Space/scroll restoration. The fixture verified 400px vertical and 582px horizontal positions survived refresh, and returning to the Space restored 400px.
 - Evidence: suite `docs/evidence/plugin-mobile-polish-2026-10-19/result.json` and screenshots; harness `scripts/check-plugin-mobile-host.mjs`. Captures were reviewed. The fixture still uses the desktop Platform runtime: mobile focus decisions are covered by the separate stub tests, not a real software-keyboard test.
-- **Unreleased; no personal Vault installation.** No storage/retry logic, note contents, command IDs or dependency versions changed. iOS WebKit, Android, software keyboards, VoiceOver and mobile drawer lifecycle still need physical-device acceptance.
+- **Prepared and verified for 0.5.8; no personal Vault installation.** The compact/mobile pass itself does not change the separately tested save-recovery logic. No note contents, data schema, command IDs or dependency versions changed. iOS WebKit, Android, software keyboards, VoiceOver and mobile drawer lifecycle still need physical-device acceptance.
 
-桌面默认行高由 32px 缩至 28px；已保存设置保留，旧库可通过“恢复默认行高”采用新密度。移动端继续保持 44px 点击区，并补齐 Space 滚动位置、选择器标题/按钮和搜索焦点处理。本轮未发布，也未修改个人 Vault。
+桌面默认行高由 32px 缩至 28px；已保存设置保留，旧库可通过“恢复默认行高”采用新密度。移动端继续保持 44px 点击区，并补齐 Space 滚动位置、选择器标题/按钮和搜索焦点处理。以上与保存失败恢复修复合并为 0.5.8；未修改个人 Vault，发布与 Community 扫描状态需另行核实。
 
-## Unreleased mobile touch pass — 2026-10-19
+## Earlier mobile touch pass — included in 0.5.8, 2026-10-19
 
 - Mobile-only touch targets (at least 44px), persistent row menus, a visible current-Space menu, capped deep indentation and a shrinkable/wrapping target picker. Keyline's desktop hover/overlay styling is overridden only under `body.is-mobile`.
 - Saved desktop row height, data schema, storage/retry logic, drag behaviour and note contents are unchanged. Mobile settings explain the separate touch-size floor in English and Chinese.

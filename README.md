@@ -40,7 +40,9 @@ Requires **Obsidian 1.7.7+**. Back up `.obsidian` and close the Vault. Copy `mai
 
 ## Language and compatibility
 
-Current release: **0.5.7**. The interface supports English and Chinese; restart after changing Obsidian’s language. Settings are searchable on Obsidian 1.13+; older versions keep the same controls. Existing user-defined names stay unchanged. Disabling and re-enabling the plugin preserves its pane placement. Desktop macOS is the release-tested environment; mobile is not yet device-validated. See [release verification](RELEASE-VERIFICATION.md).
+Current release: **0.5.8**. Desktop rows now default to **28px**, closer to the native sidebar. Your saved row height is preserved; use **Reset row height** to adopt the new default. Mobile rows and controls retain at least **44px** touch targets, with visible menus and a narrow-screen picker. Refreshing the current view preserves scroll positions. If a save fails, a persistent notice lets you retry without discarding the current session's changes.
+
+The interface supports English and Chinese; restart after changing Obsidian’s language. Settings are searchable on Obsidian 1.13+; older versions keep the same controls. Existing user-defined names stay unchanged. Disabling and re-enabling the plugin preserves its pane placement. Desktop macOS is the release-tested environment. Mobile layout and touch input have been checked in an isolated desktop host with emulation, **not on physical iOS or Android devices**. See [release verification](RELEASE-VERIFICATION.md).
 
 ## Build
 

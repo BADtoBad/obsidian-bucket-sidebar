@@ -1,31 +1,33 @@
-# Bucket Sidebar 0.5.7
+# Bucket Sidebar 0.5.8
 
 ## English
 
-A small settings-discovery and release-trust patch. Minimum Obsidian version remains **1.7.7**.
+A more compact desktop sidebar, clearer mobile controls and safer save recovery. Minimum Obsidian version remains **1.7.7**.
 
-- Make **Show Space names** and **Sidebar row height** discoverable in Obsidian 1.13+'s settings search. Older hosts keep their existing settings page, sharing the same controls and persistence.
-- Reset row height in place, without rebuilding the settings page. Settings changes still save the complete Bucket data, including spaces, references and sort preferences.
-- Build release files in GitHub Actions, generate and verify provenance attestations, then check uploaded bytes before publishing. Existing releases are never overwritten by this workflow.
-- Add an English/Chinese contributing guide with privacy, compatibility and release instructions.
+- Desktop default/reset row height is now **28px**, closer to the native sidebar. All saved heights are preserved, including 32px; use **Reset row height** to adopt the new default. The preference also works when the Keyline theme is enabled.
+- Mobile rows and controls keep at least **44px** touch targets. Row and Space menus stay visible, deep indentation is capped, and the target picker fits narrow screens. Opening the mobile picker focuses its heading rather than immediately requesting the keyboard; desktop search autofocus is retained.
+- Refreshing a view preserves horizontal Space scrolling and each Space's vertical position. These positions are remembered only for the lifetime of the view, not written to or synced with your data.
+- Failed saves retain the latest complete data snapshot and show a persistent **Retry saving** notice. Saves are read back for verification so a host write failure is not mistaken for success. Retry before closing the Vault or disabling the plugin: unsaved changes exist only in the current session.
+- English and Chinese mobile settings now call the row slider **Desktop row height**, making the separate phone touch-size floor explicit.
 
-No CSS changes, command-ID or shortcut changes, dependency upgrades, data migrations, or personal Vault installation. The retained theme-isolation rules and stable command ID may still produce Community advisories; this patch does not promise a different overall rating.
+No data-schema migration, dependency upgrade, command-ID or shortcut change. No personal Vault installation. Existing theme-isolation CSS and the stable command ID may still produce Community advisories; this patch does not promise a different overall rating.
 
-Validation: **83 tests passed**, including eight new English/Chinese legacy/declarative settings-contract cases and four release-validation cases. Type checks, lint, build, legacy checks, UI contracts and release-asset checks passed. The new settings tests exercise the production plugin with host stubs, **not a new real-Obsidian or mobile-device UI run**. See [verification details](RELEASE-VERIFICATION.md).
+Validation: **123 automated tests** and **50 checks in an isolated Obsidian 1.13.7 macOS host** passed, including default/Keyline themes, unchanged desktop custom heights, compact rows, mobile-layout emulation, touch actions and scroll restoration. Type checks, lint, build, legacy checks, UI contracts and release-asset checks passed. Mobile focus logic is separately covered with host stubs. **Physical iOS/Android, software keyboards, VoiceOver and mobile drawer lifecycle remain unverified.** See [verification details](RELEASE-VERIFICATION.md).
 
 Update through Community or replace only `main.js`, `manifest.json` and `styles.css` in `.obsidian/plugins/bucket-sidebar/`. Preserve your existing `data.json`.
 
 ## 中文
 
-本次只补充设置搜索、发行来源证明和贡献指南，最低版本仍为 **Obsidian 1.7.7**。
+本次让桌面侧栏更紧凑、移动端操作入口更清晰，并补齐保存失败后的恢复。最低版本仍为 **Obsidian 1.7.7**。
 
-- Obsidian 1.13+ 可以搜索「显示 Space 名称」「侧栏行高」；旧版保留原有设置页，新旧路径共享控件与保存方式。
-- 恢复默认行高时只更新当前滑块，不重建整个设置页。修改设置仍保存完整 Bucket 数据，保留空间、引用与排序偏好。
-- 由 GitHub Actions 构建发行文件、生成并验证来源证明，再核对上传后的字节，最后公开发布；该流程不覆盖已有发行版本。
-- 添加中英文贡献指南，说明隐私保护、兼容性检查与发行流程。
+- 桌面默认／重置行高改为 **28px**，更接近原生侧栏。包括 32px 在内的已有设置全部保留；可点击 **恢复默认行高** 使用新密度。启用 Keyline 主题时也会正确遵循该设置。
+- 移动端的行和控件保留至少 **44px** 触控区；行菜单和 Space 菜单常显，限制深层缩进，选择器适应窄屏。打开移动端选择器时先聚焦标题，不立即请求弹出键盘；桌面端保留搜索自动聚焦。
+- 视图刷新时保留 Space 栏的横向滚动及各 Space 的纵向位置。位置只在当前视图存续期间记忆，不写入或同步到数据文件。
+- 保存失败时保留最新完整数据快照，持续显示 **重试保存** 提示；保存后读回校验，避免把宿主写入失败误判为成功。请在关闭库或停用插件前重试，未保存的修改只存在于当前会话。
+- 中英文移动设置将行高滑块明确标为 **桌面行高**，说明手机触控行高独立保留。
 
-不改 CSS、命令 ID、快捷键或数据结构，不升级依赖，也不安装到个人 Vault。为兼容主题保留的强制样式和稳定命令 ID 仍可能触发 Community 提示，本次不承诺整体评级改变。
+不迁移数据结构，不升级依赖，不修改命令 ID 或快捷键，也不安装到个人 Vault。主题隔离样式与稳定命令 ID 仍可能触发 Community 提示，本次不承诺整体评级改变。
 
-验证：**83 项测试通过**，新增 8 项中英／新旧设置接口测试与 4 项发行校验测试；类型、规范、构建、旧版语法、界面约束及发行附件检查通过。设置测试运行真实插件代码，但宿主为测试替身，**不等于新的 Obsidian 实机或移动端界面验收**。详见 [验证说明](RELEASE-VERIFICATION.md)。
+验证：**123 项自动化测试**及**独立 Obsidian 1.13.7 macOS 宿主中的 50 项检查**通过，覆盖默认／Keyline 主题、桌面已有自定义行高不变、新默认密度、移动布局模拟、触控操作与滚动位置恢复；类型、规范、构建、旧版语法、界面约束及发行附件检查通过。移动焦点逻辑另有宿主替身测试。**iOS／Android 真机、软键盘、VoiceOver 和移动抽屉生命周期尚未验收。** 详见 [验证说明](RELEASE-VERIFICATION.md)。
 
 通过 Community 更新，或仅替换 `.obsidian/plugins/bucket-sidebar/` 下的 `main.js`、`manifest.json`、`styles.css`；请保留原有 `data.json`。
