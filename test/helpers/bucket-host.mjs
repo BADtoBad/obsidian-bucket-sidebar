@@ -87,7 +87,7 @@ export async function host(language, options = {}) {
     }
     hide() { this.noticeEl.isConnected = false; }
   }
-  const obsidian = { Plugin, PluginSettingTab, Setting, Notice, ItemView: Empty,
+  const obsidian = { Plugin, PluginSettingTab, Setting, Notice, Platform: { isMobile: options.mobile === true }, ItemView: Empty,
     Modal: Empty, FuzzySuggestModal: Empty, TFile: Empty, TFolder: Empty };
   const context = vm.createContext({ module: { exports: {} }, console: { error: (...args) => errors.push(args) },
     window: { localStorage: { getItem: () => language } },

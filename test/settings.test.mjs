@@ -1,6 +1,16 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { host, copy, flush } from "./helpers/bucket-host.mjs";
+
+for (const language of ['en', 'zh']) test(`mobile row-height explanation preserves desktop preference (${language})`, async () => {
+  const h = await host(language, { mobile: true });
+  const row = h.tab.getSettingDefinitions()[0].items[1];
+  assert.equal(row.name, language === 'en' ? 'Desktop row height' : '桌面行高');
+  assert.match(row.desc, /44px/);
+  assert.match(row.desc, language === 'en' ? /desktop/ : /桌面/);
+  assert.equal(h.plugin.data.settings.rowHeight, 37);
+  assert.equal(h.writes.length, 0);
+});
 for (const language of ["en", "zh"]) {
   test(`search registration is read-only and localised (${language})`, async () => {
     const h = await host(language);
@@ -51,7 +61,7 @@ for (const language of ["en", "zh"]) {
       const count = tab.containerEl.rows.length;
       rows[1].controls.reset.click();
       await flush();
-      assert.equal(rows[1].controls.slider.value, 32);
+      assert.equal(rows[1].controls.slider.value, 28);
       assert.equal(tab.containerEl.rows.length, count, "reset must not rebuild or duplicate rows");
       for (const saved of h.writes) {
         assert.deepEqual(saved.spaces, baseline.spaces);
@@ -60,12 +70,12 @@ for (const language of ["en", "zh"]) {
         assert.deepEqual(saved.settings.folderSortOrders, baseline.settings.folderSortOrders);
       }
       assert.equal(h.writes.at(-1).settings.showSpaceNames, false);
-      assert.equal(h.writes.at(-1).settings.rowHeight, 32);
+      assert.equal(h.writes.at(-1).settings.rowHeight, 28);
       assert.equal(h.refreshes(), h.writes.length);
       rows = render();
       assert.equal(rows.length, 2);
       assert.equal(rows[0].controls.toggle.value, false);
-      assert.equal(rows[1].controls.slider.value, 32);
+      assert.equal(rows[1].controls.slider.value, 28);
       rows[1].controls.slider.change(900);
       await flush();
       assert.equal(h.writes.at(-1).settings.rowHeight, 40);

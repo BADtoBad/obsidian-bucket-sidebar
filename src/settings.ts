@@ -1,4 +1,5 @@
 import type { Setting } from "obsidian";
+import { Platform } from "obsidian";
 import type { BucketData } from "./model";
 import { DEFAULT_ROW_HEIGHT, MAX_ROW_HEIGHT, MIN_ROW_HEIGHT } from "./model";
 import { localize } from "./locale/ui";
@@ -25,8 +26,10 @@ export function bucketSettingRows(plugin: BucketSettingsHost) {
       }
     },
     {
-      name: localize("侧栏行高"),
-      desc: localize`调整 Bucket、文件夹和笔记的每行高度。范围 ${MIN_ROW_HEIGHT}–${MAX_ROW_HEIGHT}px，默认 ${DEFAULT_ROW_HEIGHT}px。`,
+      name: Platform.isMobile ? localize("桌面行高") : localize("侧栏行高"),
+      desc: Platform.isMobile
+        ? localize("仅调整桌面侧栏；移动端保持至少 44px 的点击区，因此这里的调整不会改变手机行高。")
+        : localize`调整 Bucket、文件夹和笔记的每行高度。范围 ${MIN_ROW_HEIGHT}–${MAX_ROW_HEIGHT}px，默认 ${DEFAULT_ROW_HEIGHT}px。`,
       render(setting: Pick<Setting, "addToggle" | "addSlider" | "addExtraButton">): void {
         setting.addSlider((slider) => {
           slider

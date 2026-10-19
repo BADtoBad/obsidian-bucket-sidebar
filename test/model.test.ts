@@ -55,7 +55,7 @@ test("旧版数据会补上默认侧栏行高", () => {
   assert.equal(data.version, 2);
   assert.equal(data.spaces.length, 1);
   assert.equal(getActiveSpace(data).name, "主空间");
-  assert.equal(data.settings.rowHeight, 32);
+  assert.equal(data.settings.rowHeight, 28);
   assert.equal(data.settings.showSpaceNames, false);
   assert.deepEqual(getActiveSpace(data).pinnedEntries, []);
 });
@@ -145,7 +145,16 @@ test("侧栏行高会取整并限制在可用范围内", () => {
   assert.equal(normalizeRowHeight(33.6), 34);
   assert.equal(normalizeRowHeight(10), 28);
   assert.equal(normalizeRowHeight(99), 40);
-  assert.equal(normalizeRowHeight("34"), 32);
+  assert.equal(normalizeRowHeight("34"), 28);
+});
+
+test("紧凑默认值仅用于新建或缺失设置，不覆盖已有行高", () => {
+  assert.equal(createEmptyData().settings.rowHeight, 28);
+  for (const rowHeight of [28, 32, 34, 37, 40]) {
+    const data = createEmptyData();
+    data.settings.rowHeight = rowHeight;
+    assert.equal(normalizeData(JSON.parse(JSON.stringify(data))).settings.rowHeight, rowHeight);
+  }
 });
 
 test("同一文件可以同时存在于不同 Bucket", () => {

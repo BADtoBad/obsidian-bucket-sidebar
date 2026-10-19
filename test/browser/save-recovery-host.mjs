@@ -1,6 +1,7 @@
 // Minimal DOM host for manual regression checks. This is NOT Obsidian,
 // does not access a Vault and never writes a note or plugin data file.
 export const copy = value => JSON.parse(JSON.stringify(value));
+export const Platform = { isMobile: false };
 export const state = { stored: null, fail: true, hold: false, writes: 0, pending: [], render: () => {} };
 
 export class Plugin {

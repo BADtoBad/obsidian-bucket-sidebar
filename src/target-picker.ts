@@ -1,5 +1,5 @@
 import { localize } from './locale/ui';
-import { App, Modal, TAbstractFile, TFile, TFolder, setIcon } from "obsidian";
+import { App, Modal, Platform, TAbstractFile, TFile, TFolder, setIcon } from "obsidian";
 import {
   Bucket,
   BucketTarget,
@@ -65,7 +65,14 @@ export class BatchTargetPickerModal extends Modal {
 
   onOpen(): void {
     this.modalEl.classList.add("bucket-target-picker-modal");
-    this.titleEl.textContent = localize`添加到 ${this.bucket.name}`;
+    const titleLabel = createSpan();
+    titleLabel.className = "bucket-target-title-label";
+    titleLabel.textContent = localize("添加到") + " ";
+    const titleName = createSpan();
+    titleName.className = "bucket-target-title-name";
+    titleName.textContent = this.bucket.name;
+    titleName.title = this.bucket.name;
+    this.titleEl.replaceChildren(titleLabel, titleName);
     this.contentEl.replaceChildren();
 
     const layout = createDiv();
@@ -112,11 +119,19 @@ export class BatchTargetPickerModal extends Modal {
     this.contentEl.appendChild(layout);
 
     this.renderTree(false);
-    window.setTimeout(() => search.focus(), 0);
+    if (Platform.isMobile) {
+      // Browsing the tree must not summon the software keyboard. The heading
+      // provides a non-editable initial focus; tapping search still works.
+      this.titleEl.tabIndex = -1;
+      this.titleEl.focus({ preventScroll: true });
+    } else {
+      window.setTimeout(() => { if (search.isConnected) search.focus(); }, 0);
+    }
   }
 
   onClose(): void {
     this.modalEl.classList.remove("bucket-target-picker-modal");
+    this.titleEl.removeAttribute("tabindex");
     this.contentEl.replaceChildren();
     this.treeEl = null;
     this.confirmButton = null;

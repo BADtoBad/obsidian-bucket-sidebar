@@ -881,6 +881,10 @@ class BucketSidebarSettingTab extends PluginSettingTab {
 class BucketSidebarView extends ItemView {
   private readonly plugin: BucketSidebarPlugin;
   private rootEl: HTMLElement | null = null;
+  // View-local only: refreshing references must not reset browsing position
+  // or write scroll coordinates into synced Vault configuration.
+  private renderedSpaceId: string | null = null;
+  private readonly scrollTopBySpace = new Map<string, number>();
   private readonly addCurrentAction: HTMLElement;
   private readonly undoAction: HTMLElement;
 
@@ -923,11 +927,17 @@ class BucketSidebarView extends ItemView {
 
   async onClose(): Promise<void> {
     this.rootEl = null;
+    this.renderedSpaceId = null;
+    this.scrollTopBySpace.clear();
     this.contentEl.replaceChildren();
   }
 
   render(): void {
     if (!this.rootEl) return;
+    const previousSpaceId = this.renderedSpaceId;
+    const previousTabs = this.rootEl.querySelector<HTMLElement>(".bucket-space-tabs");
+    const previousScrollLeft = previousTabs?.scrollLeft || 0;
+    if (previousSpaceId) this.scrollTopBySpace.set(previousSpaceId, this.rootEl.scrollTop);
     this.rootEl.replaceChildren();
     this.rootEl.style.setProperty("--bucket-row-height", `${this.plugin.data.settings.rowHeight}px`);
     this.syncNativeActions();
@@ -961,6 +971,24 @@ class BucketSidebarView extends ItemView {
       for (const bucket of activeSpace.buckets) list.appendChild(this.renderBucket(bucket));
     }
     this.rootEl.appendChild(list);
+    this.rootEl.scrollTop = this.scrollTopBySpace.get(activeSpace.id) || 0;
+    const tabs = this.rootEl.querySelector<HTMLElement>(".bucket-space-tabs");
+    if (tabs) {
+      tabs.scrollLeft = previousScrollLeft;
+      // Reveal only a newly selected Space. An unrelated refresh should not
+      // pull the user away from other Space tabs they were browsing.
+      const activeTab = tabs.querySelector<HTMLElement>(".is-active");
+      if (activeTab && previousSpaceId !== activeSpace.id && tabs.clientWidth > 0) {
+        const viewport = tabs.getBoundingClientRect();
+        const target = activeTab.getBoundingClientRect();
+        if (target.left < viewport.left || target.width > viewport.width) tabs.scrollLeft += target.left - viewport.left;
+        else if (target.right > viewport.right) tabs.scrollLeft += target.right - viewport.right;
+      }
+    }
+    this.renderedSpaceId = activeSpace.id;
+    for (const id of this.scrollTopBySpace.keys()) {
+      if (!this.plugin.data.spaces.some(space => space.id === id)) this.scrollTopBySpace.delete(id);
+    }
   }
 
   private renderSpaceSwitcher(): HTMLElement {
@@ -1039,6 +1067,13 @@ class BucketSidebarView extends ItemView {
     addButton.addEventListener("click", () => this.plugin.promptCreateSpace());
 
     switcher.appendChild(tabs);
+    // Touch users cannot rely on a right-click on a Space. The existing
+    // native menu is shared; CSS exposes this extra entry only on mobile.
+    const spaceMenu = iconButton(switcher, "more-horizontal", localize("当前 Space 的更多操作"), event => {
+      this.showSpaceMenu(event, this.plugin.activeSpace);
+    });
+    spaceMenu.classList.add("bucket-space-menu");
+    spaceMenu.setAttribute("aria-haspopup", "menu");
     switcher.appendChild(addButton);
     wrapper.appendChild(switcher);
     return wrapper;

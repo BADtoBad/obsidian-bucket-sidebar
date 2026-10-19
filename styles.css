@@ -1,5 +1,5 @@
 .bucket-sidebar-root {
-  --bucket-row-height: 32px;
+  --bucket-row-height: 28px;
   --bucket-group-gap: 14px;
   --bucket-pinned-gap: 14px;
   --bucket-switcher-background: var(--background-secondary-alt, var(--background-secondary));
@@ -237,6 +237,12 @@
   min-width: 0;
   min-height: var(--bucket-row-height);
   border-radius: var(--radius-s);
+}
+
+/* Respect Bucket's own row-height preference even when a theme imposes a
+   different native-sidebar minimum. Mobile's touch floor is applied below. */
+.bucket-sidebar-root :is(.bucket-header, .bucket-entry-row) {
+  min-height: var(--bucket-row-height);
 }
 
 .bucket-header {
@@ -885,4 +891,176 @@
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
   }
+}
+
+/* Mobile touch pass. Saved row height and all desktop geometry stay intact.
+   Do not replace native scrolling, long-press menus or keyboard handling. */
+.bucket-sidebar-root button.bucket-space-menu {
+  display: none;
+}
+
+body.is-mobile .bucket-sidebar-root {
+  padding-bottom: var(--safe-area-inset-bottom, 0px);
+  box-sizing: border-box;
+}
+
+body.is-mobile .bucket-sidebar-root .bucket-row-actions {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Themes may overlay desktop actions on the filename or swap disclosure
+   arrows for icons on hover. Touch needs separate, always-available targets. */
+body.is-mobile .bucket-sidebar-root :is(.bucket-header, .bucket-entry-row) > .bucket-row-actions {
+  position: static;
+  transform: none;
+  padding: 0;
+  background: transparent;
+}
+
+body.is-mobile .bucket-sidebar-root :is(.bucket-header, .bucket-entry-row) > .bucket-disclosure {
+  flex-basis: 44px;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+body.is-mobile .bucket-sidebar-root .bucket-disclosure svg {
+  display: block;
+}
+
+body.is-mobile .bucket-sidebar-root .bucket-disclosure::before {
+  display: none;
+}
+
+body.is-mobile .bucket-sidebar-root :is(.bucket-header, .bucket-entry-row) > :is(.bucket-leading-icon, .bucket-entry-icon) {
+  margin-inline-start: 0;
+  opacity: 1 !important;
+}
+
+/* Keep one visible menu per row. Add/create actions remain in that menu,
+   leaving room for names instead of squeezing in two large touch buttons. */
+body.is-mobile .bucket-sidebar-root .bucket-row-actions > button:not(:last-child) {
+  display: none;
+}
+
+body.is-mobile .bucket-sidebar-root button.bucket-icon-button,
+body.is-mobile .bucket-sidebar-root button.bucket-space-add,
+body.is-mobile .bucket-sidebar-root button.bucket-space-tab {
+  flex-shrink: 0;
+  min-width: 44px;
+  min-height: 44px;
+  height: 44px;
+}
+
+body.is-mobile .bucket-sidebar-root button.bucket-icon-button,
+body.is-mobile .bucket-sidebar-root button.bucket-space-add {
+  width: 44px;
+}
+
+body.is-mobile .bucket-sidebar-root button.bucket-space-menu {
+  display: inline-flex;
+}
+
+body.is-mobile .bucket-sidebar-root .bucket-disclosure-spacer {
+  flex-basis: 44px;
+  width: 44px;
+}
+
+body.is-mobile .bucket-sidebar-root .bucket-header,
+body.is-mobile .bucket-sidebar-root .bucket-entry-row,
+body.is-mobile .bucket-sidebar-root button.bucket-entry-empty {
+  min-height: max(44px, var(--bucket-row-height));
+}
+
+body.is-mobile .bucket-sidebar-root button.bucket-name,
+body.is-mobile .bucket-sidebar-root button.bucket-entry-label {
+  height: max(44px, var(--bucket-row-height));
+  line-height: max(44px, var(--bucket-row-height));
+}
+
+body.is-mobile .bucket-sidebar-root .bucket-nested-row {
+  padding-inline-start: calc(2px + min(var(--bucket-indent, 0px), 36px));
+}
+
+body.is-mobile .bucket-target-picker {
+  min-height: 0;
+  height: min(68vh, 640px);
+  height: min(68dvh, 640px);
+  max-height: 100%;
+}
+
+body.is-mobile .bucket-target-picker-modal .modal-title {
+  padding-inline-end: 48px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+body.is-mobile .bucket-target-title-label,
+body.is-mobile .bucket-target-title-name {
+  display: block;
+  text-align: start;
+}
+
+body.is-mobile .bucket-target-title-name {
+  margin-top: 4px;
+  overflow: hidden;
+  color: var(--text-muted);
+  font-size: var(--font-ui-small);
+  font-weight: var(--font-normal);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+body.is-mobile .bucket-target-row {
+  min-height: 44px;
+  padding-inline-start: calc(2px + min(var(--bucket-picker-indent, 0px), 28px));
+}
+
+body.is-mobile .bucket-target-picker-modal button.bucket-target-disclosure,
+body.is-mobile .bucket-target-disclosure-spacer,
+body.is-mobile .bucket-target-picker-modal button.bucket-target-toggle {
+  flex: 0 0 44px;
+  width: 44px;
+  min-width: 44px;
+  height: 44px;
+}
+
+body.is-mobile .bucket-target-picker-modal button.bucket-target-label {
+  height: 44px;
+  line-height: 44px;
+}
+
+/* A compact visible ring inside the unchanged 44px touch/keyboard target. */
+body.is-mobile .bucket-target-picker-modal button.bucket-target-toggle {
+  position: relative;
+  margin-inline: 0;
+  border: 0 !important;
+}
+
+body.is-mobile .bucket-target-picker-modal button.bucket-target-toggle::before {
+  content: "";
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+body.is-mobile .bucket-target-footer,
+body.is-mobile .bucket-target-footer-actions,
+body.is-mobile .bucket-modal-actions {
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+body.is-mobile .bucket-target-footer-actions button,
+body.is-mobile .bucket-modal-actions button {
+  min-height: 44px;
+}
+
+body.is-mobile .bucket-target-search,
+body.is-mobile .bucket-text-input {
+  min-height: 44px;
+  font-size: max(16px, var(--font-ui-small));
 }

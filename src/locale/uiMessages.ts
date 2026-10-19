@@ -1,4 +1,8 @@
 export const english: Record<string, string> = {
+  '当前 Space 的更多操作': 'More actions for the current Space',
+  '桌面行高': 'Desktop row height',
+  '仅调整桌面侧栏；移动端保持至少 44px 的点击区，因此这里的调整不会改变手机行高。': 'Adjusts the desktop sidebar only. Mobile touch targets stay at least 44px, so this does not change phone row height.',
+  '添加到': 'Add to',
   'Bucket Sidebar：修改尚未保存，当前会话中仍保留。请在关闭库或停用插件前重试保存。': 'Bucket Sidebar: Changes are not saved yet. They remain in this session. Retry saving before closing the vault or disabling the plugin.',
   '重试保存': 'Retry saving',
   '正在保存…': 'Saving…',

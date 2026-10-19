@@ -34,7 +34,7 @@ export interface BucketSettings {
   folderSortOrders?: Record<string, FolderSortOrder>;
 }
 
-export const DEFAULT_ROW_HEIGHT = 32;
+export const DEFAULT_ROW_HEIGHT = 28;
 export const MIN_ROW_HEIGHT = 28;
 export const MAX_ROW_HEIGHT = 40;
 export const DEFAULT_SPACE_ID = "space-default";

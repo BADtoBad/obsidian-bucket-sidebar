@@ -1,4 +1,30 @@
-# Bucket Sidebar 0.5.7 — patch verification, 2026-10-19
+# Bucket Sidebar — verification
+
+## Unreleased compact rows and mobile polish — 2026-10-19
+
+- Desktop default/reset row height is now **28px** (previously 32px). Existing saved heights, including 32px, are preserved; no preference migration or configuration rewrite runs at startup. Bucket-owned row selectors now respect that preference even when Keyline supplies a different minimum.
+- The current view retains horizontal Space scrolling on refresh, reveals a newly selected Space and remembers each Space's vertical position for the lifetime of the view. These positions are not persisted or synced; closing the view clears them.
+- Mobile target picking initially focuses a non-editable heading, not the search input. Desktop deferred search focus remains, with a disconnected-element guard. The heading uses separate action/name lines on mobile, and the selection ring is visually 22px inside the unchanged 44px target. Full names remain in text/accessible content.
+- Mobile settings explicitly label the slider “Desktop row height” / “桌面行高” and explain that it does not change phone row height. These changes follow the Apple HIG distinction between touch area and visual control size, and respect software-keyboard intent.
+- Full and browser-only TypeScript checks, **123 automated tests**, production build, legacy/API checks and UI contracts passed. ESLint: zero errors, one existing stable-command-ID advisory. New tests execute the actual picker with mobile/desktop Platform stubs in both languages and verify new/reset defaults without overwriting stored preferences.
+- The owned Obsidian 1.13.7 macOS host harness passed **50 checks**: eight unchanged desktop comparisons using an existing 40px preference, default/Keyline 28px rendering, retained desktop search focus, 32 mobile layout cases, touch interactions, and Space/scroll restoration. The fixture verified 400px vertical and 582px horizontal positions survived refresh, and returning to the Space restored 400px.
+- Evidence: suite `docs/evidence/plugin-mobile-polish-2026-10-19/result.json` and screenshots; harness `scripts/check-plugin-mobile-host.mjs`. Captures were reviewed. The fixture still uses the desktop Platform runtime: mobile focus decisions are covered by the separate stub tests, not a real software-keyboard test.
+- **Unreleased; no personal Vault installation.** No storage/retry logic, note contents, command IDs or dependency versions changed. iOS WebKit, Android, software keyboards, VoiceOver and mobile drawer lifecycle still need physical-device acceptance.
+
+桌面默认行高由 32px 缩至 28px；已保存设置保留，旧库可通过“恢复默认行高”采用新密度。移动端继续保持 44px 点击区，并补齐 Space 滚动位置、选择器标题/按钮和搜索焦点处理。本轮未发布，也未修改个人 Vault。
+
+## Unreleased mobile touch pass — 2026-10-19
+
+- Mobile-only touch targets (at least 44px), persistent row menus, a visible current-Space menu, capped deep indentation and a shrinkable/wrapping target picker. Keyline's desktop hover/overlay styling is overridden only under `body.is-mobile`.
+- Saved desktop row height, data schema, storage/retry logic, drag behaviour and note contents are unchanged. Mobile settings explain the separate touch-size floor in English and Chinese.
+- TypeScript, 116 tests, production build, legacy checks and UI contracts pass. ESLint: zero errors; the existing stable-command-ID advisory remains.
+- Isolated Obsidian 1.13.7 macOS renderer: 8 desktop geometry/style comparisons match the previous CSS; 32 mobile sidebar/picker cases pass across 320/390/430/768px, default/Keyline themes and light/dark. Touch menus, collapse/expand, selecting/adding a reference with disk verification, file opening and constrained-height picker checks pass. The combined suite harness also verifies desktop Keyline load/unload (46 checks total).
+- Evidence/harness: suite `docs/evidence/plugin-mobile-2026-10-19/result.json` and `scripts/check-plugin-mobile-host.mjs`. Captures were visually reviewed. The harness owns a temporary Vault/profile, never personal Vaults.
+- **Not released or installed in a personal Vault.** Physical iOS/Android, iOS WebKit, software keyboards, VoiceOver and native mobile drawer lifecycle remain unverified. Emulated mobile CSS and touch input are not device certification.
+
+本轮为未发布的移动端低风险补丁：触控入口常显、点击区至少 44px、弹窗适应窄屏；不改桌面保存设置、文件内容或保存恢复逻辑。默认主题与 Keyline 明暗模式已完成独立宿主模拟检查，尚不代表 iPhone／Android 真机验收。
+
+## Bucket Sidebar 0.5.7 — patch verification, 2026-10-19
 
 - Same pinned dependencies and lockfile as 0.5.6; Obsidian minimum remains 1.7.7.
 - 83 automated tests passed: 71 existing regression tests, eight settings-contract cases and four release-policy cases. Settings tests execute the actual bundled plugin with a minimal host stub, exercise English/Chinese and old/new render paths, and confirm complete-data persistence, bounds, reset, no writes during indexing/rendering, and matching labels. They are not a replacement for actual host settings-search UI acceptance.
